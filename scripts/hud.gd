@@ -3,6 +3,7 @@ class_name RacingHUD
 
 signal input_text_changed(new_text: String)
 signal restart_requested
+signal difficulty_changed(new_difficulty: String)
 
 @onready var sentence_display: RichTextLabel = $RootControl/TypingPanel/VBox/SentenceDisplay
 @onready var input_line: LineEdit = $RootControl/TypingPanel/VBox/InputLine
@@ -10,25 +11,58 @@ signal restart_requested
 @onready var speed_bar: ProgressBar = $RootControl/TopPanel/HBox/SpeedBox/SpeedBar
 @onready var distance_label: Label = $RootControl/TopPanel/HBox/DistanceBox/DistanceLabel
 @onready var distance_bar: ProgressBar = $RootControl/TopPanel/HBox/DistanceBox/DistanceBar
+@onready var pos_label: Label = $RootControl/TopPanel/HBox/PositionBox/PosLabel
+@onready var diff_option: OptionButton = $RootControl/TopPanel/HBox/DifficultyBox/DiffOption
 @onready var nitro_badge: PanelContainer = $RootControl/NitroBadge
 @onready var nitro_timer_label: Label = $RootControl/NitroBadge/NitroTimerLabel
-@onready var win_modal: PanelContainer = $RootControl/WinModal
-@onready var win_stats_label: Label = $RootControl/WinModal/Margin/VBox/WinStatsLabel
-@onready var restart_button: Button = $RootControl/WinModal/Margin/VBox/RestartButton
 @onready var typing_panel: PanelContainer = $RootControl/TypingPanel
 
+# Countdown
+@onready var countdown_label: Label = $RootControl/CountdownOverlay/CountdownLabel
+@onready var countdown_overlay: Control = $RootControl/CountdownOverlay
+
+# Results Modal
+@onready var results_modal: PanelContainer = $RootControl/ResultsModal
+@onready var results_title: Label = $RootControl/ResultsModal/Margin/VBox/ResultsTitle
+@onready var standings_container: VBoxContainer = $RootControl/ResultsModal/Margin/VBox/StandingsContainer
+@onready var player_stats_label: Label = $RootControl/ResultsModal/Margin/VBox/PlayerStatsLabel
+@onready var restart_button: Button = $RootControl/ResultsModal/Margin/VBox/RestartButton
+
 var is_race_ended: bool = false
+var is_counting_down: bool = false
 var input_shake_timer: float = 0.0
 
 func _ready() -> void:
-	win_modal.visible = false
+	results_modal.visible = false
 	nitro_badge.visible = false
+	countdown_overlay.visible = false
 	input_line.text_changed.connect(_on_line_edit_text_changed)
 	restart_button.pressed.connect(_on_restart_button_pressed)
+
+	_setup_difficulty_options()
+	_ensure_input_focus()
+
+func _setup_difficulty_options() -> void:
+	if not diff_option:
+		return
+	diff_option.clear()
+	diff_option.add_item("Easy (Casual)")
+	diff_option.add_item("Medium (Normal)")
+	diff_option.add_item("Hard (Expert)")
+	diff_option.selected = 1 # Default to Medium
+	diff_option.item_selected.connect(_on_difficulty_selected)
+
+func _on_difficulty_selected(index: int) -> void:
+	var diff_name := "Medium"
+	match index:
+		0: diff_name = "Easy"
+		1: diff_name = "Medium"
+		2: diff_name = "Hard"
+	difficulty_changed.emit(diff_name)
 	_ensure_input_focus()
 
 func _process(delta: float) -> void:
-	if not is_race_ended:
+	if not is_race_ended and not is_counting_down:
 		if not input_line.has_focus():
 			input_line.grab_focus()
 
@@ -41,13 +75,32 @@ func _process(delta: float) -> void:
 			typing_panel.position.x = (typing_panel.get_parent_control().size.x - typing_panel.size.x) * 0.5
 
 func _ensure_input_focus() -> void:
-	input_line.grab_focus()
+	if not is_counting_down and not is_race_ended:
+		input_line.grab_focus()
 
 func _on_line_edit_text_changed(new_text: String) -> void:
+	if is_counting_down or is_race_ended:
+		input_line.text = ""
+		return
 	input_text_changed.emit(new_text)
 
 func clear_input() -> void:
 	input_line.text = ""
+
+func set_countdown(countdown_text: String, is_go: bool = false) -> void:
+	is_counting_down = not is_go
+	countdown_overlay.visible = true
+	countdown_label.text = countdown_text
+
+	if is_go:
+		countdown_label.add_theme_color_override("font_color", Color(0.2, 0.95, 0.35))
+	else:
+		countdown_label.add_theme_color_override("font_color", Color(0.98, 0.82, 0.2))
+
+func hide_countdown() -> void:
+	is_counting_down = false
+	countdown_overlay.visible = false
+	_ensure_input_focus()
 
 func update_sentence_display(target: String, typed: String, has_error: bool) -> void:
 	var bb := ""
@@ -73,24 +126,23 @@ func update_sentence_display(target: String, typed: String, has_error: bool) -> 
 		if i < typed_len:
 			var typed_char := typed.substr(i, 1)
 			if typed_matching and typed_char == target_char:
-				# Correctly typed characters in green
+				# Correct character: green
 				bb += "[color=#22c55e]" + escaped_char + "[/color]"
 			else:
-				# Incorrectly typed characters highlighted in bold red with background
+				# Incorrect character: red
 				typed_matching = false
 				var display_symbol := escaped_char if target_char != " " else "_"
 				bb += "[color=#ffffff][bgcolor=#dc2626]" + display_symbol + "[/bgcolor][/color]"
 		elif i == typed_len:
-			# Current cursor character to type next
+			# Cursor character to type next
 			if typed_matching:
 				bb += "[color=#f59e0b][u]" + escaped_char + "[/u][/color]"
 			else:
 				bb += "[color=#64748b]" + escaped_char + "[/color]"
 		else:
-			# Remaining untyped characters
+			# Remaining untyped text
 			bb += "[color=#94a3b8]" + escaped_char + "[/color]"
 
-	# Overflow characters typed past target sentence length
 	if typed_len > target_len:
 		var extra := typed.substr(target_len)
 		bb += " [color=#ffffff][bgcolor=#b91c1c][i]+" + extra + "[/i][/bgcolor][/color]"
@@ -99,6 +151,25 @@ func update_sentence_display(target: String, typed: String, has_error: bool) -> 
 
 func show_typing_error_effect() -> void:
 	input_shake_timer = 0.22
+
+func update_player_position(rank: int, total_cars: int = 4) -> void:
+	var suffix := "th"
+	match rank:
+		1: suffix = "st"
+		2: suffix = "nd"
+		3: suffix = "rd"
+
+	pos_label.text = "%d%s / %d" % [rank, suffix, total_cars]
+
+	match rank:
+		1:
+			pos_label.add_theme_color_override("font_color", Color(0.98, 0.78, 0.15)) # Gold
+		2:
+			pos_label.add_theme_color_override("font_color", Color(0.88, 0.92, 0.96)) # Silver
+		3:
+			pos_label.add_theme_color_override("font_color", Color(0.85, 0.55, 0.25)) # Bronze
+		_:
+			pos_label.add_theme_color_override("font_color", Color(0.65, 0.70, 0.78)) # 4th
 
 func update_speed(current_kmh: float, max_kmh: float, is_nitro: bool) -> void:
 	speed_label.text = "%d KM/H" % int(round(current_kmh))
@@ -122,24 +193,76 @@ func set_nitro_active(active: bool, time_left: float) -> void:
 	if active:
 		nitro_timer_label.text = "NITRO BOOST: %.1fs" % time_left
 
-func show_win_screen(final_time: float, top_speed: float, wpm: float, accuracy: float) -> void:
+func show_race_results(standings: Array, player_stats: Dictionary) -> void:
 	is_race_ended = true
 	input_line.editable = false
-	win_modal.visible = true
+	results_modal.visible = true
 
-	var time_str := "%.2f s" % final_time
-	var speed_str := "%d KM/H" % int(top_speed)
-	var wpm_str := "%d WPM" % int(wpm)
-	var acc_str := "%.1f %%" % accuracy
+	# Clear previous standing rows
+	for child in standings_container.get_children():
+		child.queue_free()
 
-	win_stats_label.text = "TIME: %s   |   TOP SPEED: %s\nTYPING SPEED: %s   |   ACCURACY: %s" % [
-		time_str, speed_str, wpm_str, acc_str
+	var player_rank: int = player_stats.get("rank", 1)
+	match player_rank:
+		1: results_title.text = "🏆 VICTORY! 1st PLACE! 🏆"
+		2: results_title.text = "🥈 2nd PLACE FINISH! 🥈"
+		3: results_title.text = "🥉 3rd PLACE FINISH! 🥉"
+		_: results_title.text = "🏁 4th PLACE FINISH 🏁"
+
+	# Build Standings Table
+	for entry in standings:
+		var row := HBoxContainer.new()
+		row.theme_override_constants.separation = 16
+
+		var rank_lbl := Label.new()
+		rank_lbl.custom_minimum_size = Vector2(50, 0)
+		var rank_num: int = entry.get("rank", 0)
+		var medal := "🏁"
+		match rank_num:
+			1: medal = "🥇 1st"
+			2: medal = "🥈 2nd"
+			3: medal = "🥉 3rd"
+			_: medal = "   4th"
+		rank_lbl.text = medal
+		rank_lbl.theme_override_font_sizes.font_size = 18
+
+		var name_lbl := Label.new()
+		name_lbl.custom_minimum_size = Vector2(200, 0)
+		var is_player: bool = entry.get("is_player", false)
+		name_lbl.text = entry.get("name", "Racer")
+		name_lbl.theme_override_font_sizes.font_size = 18
+		if is_player:
+			name_lbl.add_theme_color_override("font_color", Color(0.3, 0.75, 1.0))
+		else:
+			name_lbl.add_theme_color_override("font_color", entry.get("color", Color.WHITE))
+
+		var time_lbl := Label.new()
+		time_lbl.custom_minimum_size = Vector2(100, 0)
+		var r_time: float = entry.get("time", 0.0)
+		time_lbl.text = "%.2fs" % r_time if r_time > 0.0 else "Finished"
+		time_lbl.theme_override_font_sizes.font_size = 18
+		time_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+
+		row.add_child(rank_lbl)
+		row.add_child(name_lbl)
+		row.add_child(time_lbl)
+		standings_container.add_child(row)
+
+	# Player Typing Summary
+	var time_val: float = player_stats.get("time", 0.0)
+	var speed_val: float = player_stats.get("top_speed", 0.0)
+	var wpm_val: float = player_stats.get("wpm", 0.0)
+	var acc_val: float = player_stats.get("accuracy", 100.0)
+
+	player_stats_label.text = "YOUR STATS | TIME: %.2fs | TOP SPEED: %d KM/H\nTYPING SPEED: %d WPM | ACCURACY: %.1f%%" % [
+		time_val, int(speed_val), int(wpm_val), acc_val
 	]
+
 	restart_button.grab_focus()
 
 func reset_hud() -> void:
 	is_race_ended = false
-	win_modal.visible = false
+	results_modal.visible = false
 	nitro_badge.visible = false
 	input_line.editable = true
 	input_line.text = ""

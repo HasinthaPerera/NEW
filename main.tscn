@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="Script" path="res://scripts/track.gd" id="2_track"]
 [ext_resource type="PackedScene" path="res://scenes/car.tscn" id="3_car"]
-[ext_resource type="Script" path="res://scripts/typing_manager.gd" id="4_type"]
-[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="5_hud"]
+[ext_resource type="PackedScene" path="res://scenes/ai_car.tscn" id="4_ai_car"]
+[ext_resource type="Script" path="res://scripts/typing_manager.gd" id="5_type"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="6_hud"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sky"]
 sky_top_color = Color(0.35, 0.6, 0.95, 1)
@@ -43,9 +44,24 @@ shadow_enabled = true
 script = ExtResource("2_track")
 
 [node name="Car" parent="." instance=ExtResource("3_car")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0)
+
+[node name="AICar1" parent="." instance=ExtResource("4_ai_car")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0, 0)
+car_name = "Red Fury"
+car_color = Color(0.92, 0.22, 0.22, 1)
+
+[node name="AICar2" parent="." instance=ExtResource("4_ai_car")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0)
+car_name = "Yellow Lightning"
+car_color = Color(0.96, 0.78, 0.15, 1)
+
+[node name="AICar3" parent="." instance=ExtResource("4_ai_car")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 0)
+car_name = "Green Viper"
+car_color = Color(0.18, 0.82, 0.35, 1)
 
 [node name="TypingManager" type="Node" parent="."]
-script = ExtResource("4_type")
+script = ExtResource("5_type")
 
-[node name="HUD" parent="." instance=ExtResource("5_hud")]
+[node name="HUD" parent="." instance=ExtResource("6_hud")]
