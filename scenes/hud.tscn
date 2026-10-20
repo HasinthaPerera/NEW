@@ -1,17 +1,17 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://scripts/hud.gd" id="1_hud_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_top"]
-bg_color = Color(0.06, 0.08, 0.12, 0.88)
+bg_color = Color(0.06, 0.08, 0.12, 0.9)
 border_width_bottom = 2
 border_color = Color(0.2, 0.28, 0.4, 0.7)
 corner_radius_bottom_right = 12
 corner_radius_bottom_left = 12
-content_margin_left = 20.0
-content_margin_top = 10.0
-content_margin_right = 20.0
-content_margin_bottom = 10.0
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nitro"]
 bg_color = Color(0.85, 0.45, 0.05, 0.95)
@@ -41,9 +41,9 @@ corner_radius_top_right = 14
 corner_radius_bottom_right = 14
 corner_radius_bottom_left = 14
 content_margin_left = 24.0
-content_margin_top = 16.0
+content_margin_top = 14.0
 content_margin_right = 24.0
-content_margin_bottom = 16.0
+content_margin_bottom = 14.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_win"]
 bg_color = Color(0.04, 0.06, 0.1, 0.96)
@@ -77,48 +77,97 @@ mouse_filter = 2
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 74.0
+offset_bottom = 76.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_top")
 
 [node name="HBox" type="HBoxContainer" parent="RootControl/TopPanel"]
 layout_mode = 2
-theme_override_constants/separation = 40
+theme_override_constants/separation = 24
 alignment = 1
 
-[node name="SpeedBox" type="VBoxContainer" parent="RootControl/TopPanel/HBox"]
-custom_minimum_size = Vector2(280, 0)
+[node name="PositionBox" type="VBoxContainer" parent="RootControl/TopPanel/HBox"]
+custom_minimum_size = Vector2(130, 0)
 layout_mode = 2
 alignment = 1
+
+[node name="PosTitle" type="Label" parent="RootControl/TopPanel/HBox/PositionBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.85, 1)
+theme_override_font_sizes/font_size = 12
+text = "POSITION"
+horizontal_alignment = 1
+
+[node name="PosLabel" type="Label" parent="RootControl/TopPanel/HBox/PositionBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.78, 0.15, 1)
+theme_override_font_sizes/font_size = 24
+text = "1st / 4"
+horizontal_alignment = 1
+
+[node name="SpeedBox" type="VBoxContainer" parent="RootControl/TopPanel/HBox"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="SpeedTitle" type="Label" parent="RootControl/TopPanel/HBox/SpeedBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.85, 1)
+theme_override_font_sizes/font_size = 12
+text = "SPEED"
+horizontal_alignment = 1
 
 [node name="SpeedLabel" type="Label" parent="RootControl/TopPanel/HBox/SpeedBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 24
+theme_override_font_sizes/font_size = 22
 text = "0 KM/H"
 horizontal_alignment = 1
 
 [node name="SpeedBar" type="ProgressBar" parent="RootControl/TopPanel/HBox/SpeedBox"]
-custom_minimum_size = Vector2(0, 10)
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
-max_value = 180.0
+max_value = 185.0
 show_percentage = false
 
 [node name="DistanceBox" type="VBoxContainer" parent="RootControl/TopPanel/HBox"]
-custom_minimum_size = Vector2(400, 0)
+custom_minimum_size = Vector2(340, 0)
 layout_mode = 2
 alignment = 1
 
+[node name="DistanceTitle" type="Label" parent="RootControl/TopPanel/HBox/DistanceBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.85, 1)
+theme_override_font_sizes/font_size = 12
+text = "RACE PROGRESS"
+horizontal_alignment = 1
+
 [node name="DistanceLabel" type="Label" parent="RootControl/TopPanel/HBox/DistanceBox"]
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 17
 text = "TRACK: 0m / 500m"
 horizontal_alignment = 1
 
 [node name="DistanceBar" type="ProgressBar" parent="RootControl/TopPanel/HBox/DistanceBox"]
-custom_minimum_size = Vector2(0, 10)
+custom_minimum_size = Vector2(0, 8)
 layout_mode = 2
 max_value = 500.0
 show_percentage = false
+
+[node name="DifficultyBox" type="VBoxContainer" parent="RootControl/TopPanel/HBox"]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+alignment = 1
+
+[node name="DiffTitle" type="Label" parent="RootControl/TopPanel/HBox/DifficultyBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.72, 0.85, 1)
+theme_override_font_sizes/font_size = 12
+text = "AI DIFFICULTY"
+horizontal_alignment = 1
+
+[node name="DiffOption" type="OptionButton" parent="RootControl/TopPanel/HBox/DifficultyBox"]
+layout_mode = 2
+focus_mode = 0
 
 [node name="NitroBadge" type="PanelContainer" parent="RootControl"]
 visible = false
@@ -139,6 +188,37 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
 text = "🔥 NITRO BOOST: 3.5s"
 horizontal_alignment = 1
+
+[node name="CountdownOverlay" type="Control" parent="RootControl"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="CountdownLabel" type="Label" parent="RootControl/CountdownOverlay"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -120.0
+offset_right = 200.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.98, 0.82, 0.2, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 0.9)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 96
+text = "3"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="TypingPanel" type="PanelContainer" parent="RootControl"]
 custom_minimum_size = Vector2(760, 130)
@@ -182,49 +262,53 @@ theme_override_font_sizes/font_size = 18
 placeholder_text = "Type here..."
 caret_blink = true
 
-[node name="WinModal" type="PanelContainer" parent="RootControl"]
+[node name="ResultsModal" type="PanelContainer" parent="RootControl"]
 visible = false
-custom_minimum_size = Vector2(500, 240)
+custom_minimum_size = Vector2(560, 320)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -250.0
-offset_top = -120.0
-offset_right = 250.0
-offset_bottom = 120.0
+offset_left = -280.0
+offset_top = -160.0
+offset_right = 280.0
+offset_bottom = 160.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_win")
 
-[node name="Margin" type="MarginContainer" parent="RootControl/WinModal"]
+[node name="Margin" type="MarginContainer" parent="RootControl/ResultsModal"]
 layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="RootControl/WinModal/Margin"]
+[node name="VBox" type="VBoxContainer" parent="RootControl/ResultsModal/Margin"]
 layout_mode = 2
 theme_override_constants/separation = 16
 alignment = 1
 
-[node name="WinTitle" type="Label" parent="RootControl/WinModal/Margin/VBox"]
+[node name="ResultsTitle" type="Label" parent="RootControl/ResultsModal/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.98, 0.82, 0.2, 1)
-theme_override_font_sizes/font_size = 28
-text = "🏁 RACE FINISHED! VICTORY! 🏁"
+theme_override_font_sizes/font_size = 26
+text = "🏁 RACE RESULTS 🏁"
 horizontal_alignment = 1
 
-[node name="WinStatsLabel" type="Label" parent="RootControl/WinModal/Margin/VBox"]
+[node name="StandingsContainer" type="VBoxContainer" parent="RootControl/ResultsModal/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="PlayerStatsLabel" type="Label" parent="RootControl/ResultsModal/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.88, 0.92, 0.96, 1)
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 15
 text = "TIME: 00.00s | TOP SPEED: 0 KM/H
 TYPING SPEED: 0 WPM | ACCURACY: 100%"
 horizontal_alignment = 1
 
-[node name="RestartButton" type="Button" parent="RootControl/WinModal/Margin/VBox"]
-custom_minimum_size = Vector2(200, 44)
+[node name="RestartButton" type="Button" parent="RootControl/ResultsModal/Margin/VBox"]
+custom_minimum_size = Vector2(220, 44)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_font_sizes/font_size = 18
-text = "PLAY AGAIN (ENTER)"
+text = "RESTART RACE (ENTER)"

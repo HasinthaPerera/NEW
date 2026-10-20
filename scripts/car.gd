@@ -16,10 +16,15 @@ var current_speed_kmh: float = 0.0
 var target_speed_kmh: float = 0.0
 var is_nitro_active: bool = false
 var nitro_timer: float = 0.0
+var is_race_started: bool = false
 var is_race_finished: bool = false
 var start_z: float = 0.0
 var distance_traveled: float = 0.0
 var time_since_last_keystroke: float = 0.0
+var car_name: String = "Player (You)"
+var car_color: Color = Color(0.12, 0.48, 0.96)
+var finish_rank: int = 0
+var finish_time: float = 0.0
 
 @onready var wheels: Node3D = $Visuals/Wheels
 @onready var nitro_flame: Node3D = $Visuals/NitroFlame
@@ -80,21 +85,28 @@ func _physics_process(delta: float) -> void:
 	speed_changed.emit(current_speed_kmh, active_max)
 	nitro_status_changed.emit(is_nitro_active, maxf(0.0, nitro_timer))
 
+func start_race() -> void:
+	is_race_started = true
+	is_race_finished = false
+	finish_rank = 0
+	finish_time = 0.0
+	time_since_last_keystroke = 0.0
+
 func accelerate_from_keystroke() -> void:
-	if is_race_finished:
+	if not is_race_started or is_race_finished:
 		return
 	time_since_last_keystroke = 0.0
 	var cap: float = max_nitro_speed_kmh if is_nitro_active else max_normal_speed_kmh
 	target_speed_kmh = clampf(target_speed_kmh + acceleration_kmh_per_char, 0.0, cap)
 
 func apply_typing_mistake_penalty() -> void:
-	if is_race_finished:
+	if not is_race_started or is_race_finished:
 		return
 	target_speed_kmh = maxf(0.0, target_speed_kmh - mistake_penalty_kmh)
 	current_speed_kmh = maxf(0.0, current_speed_kmh - (mistake_penalty_kmh * 0.6))
 
 func activate_nitro() -> void:
-	if is_race_finished:
+	if not is_race_started or is_race_finished:
 		return
 	is_nitro_active = true
 	nitro_timer = nitro_duration
@@ -111,17 +123,28 @@ func end_nitro() -> void:
 	if target_speed_kmh > max_normal_speed_kmh:
 		target_speed_kmh = max_normal_speed_kmh
 
-func finish_race() -> void:
+func finish_race(rank: int = 0, race_time: float = 0.0) -> void:
+	if is_race_finished:
+		return
 	is_race_finished = true
+	finish_rank = rank
+	finish_time = race_time
 	end_nitro()
 
-func reset_car() -> void:
-	global_position.z = start_z
+func reset_car(pos: Vector3 = Vector3.ZERO) -> void:
+	if pos != Vector3.ZERO:
+		global_position = pos
+		start_z = pos.z
+	else:
+		global_position.z = start_z
 	current_speed_kmh = 0.0
 	target_speed_kmh = 0.0
 	distance_traveled = 0.0
 	time_since_last_keystroke = 0.0
+	is_race_started = false
 	is_race_finished = false
+	finish_rank = 0
+	finish_time = 0.0
 	end_nitro()
 	if camera_3d:
 		camera_3d.fov = 74.0

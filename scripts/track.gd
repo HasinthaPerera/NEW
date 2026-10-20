@@ -1,13 +1,14 @@
 extends Node3D
 class_name RacingTrack
 
+signal car_crossed_finish_line(car_node: Node3D)
 signal player_crossed_finish_line
 
 @export var track_length: float = 500.0 # From Z = 0 to Z = -500.0
 @export var road_width: float = 14.0
 
 var finish_line_z: float = -500.0
-var finish_triggered: bool = false
+var finished_cars: Array[Node3D] = []
 
 func _ready() -> void:
 	finish_line_z = -track_length
@@ -95,6 +96,31 @@ func _generate_track_environment() -> void:
 		dash.position = Vector3(0.0, 0.01, z_cursor)
 		dashes_container.add_child(dash)
 		z_cursor -= 7.0
+
+	# 4b. Starting Line & 4 Grid Boxes
+	var start_line_mesh := BoxMesh.new()
+	start_line_mesh.size = Vector3(road_width - 1.0, 0.02, 0.6)
+	start_line_mesh.material = stripe_mat
+
+	var start_line_node := MeshInstance3D.new()
+	start_line_node.name = "StartLine"
+	start_line_node.mesh = start_line_mesh
+	start_line_node.position = Vector3(0.0, 0.015, -2.5)
+	add_child(start_line_node)
+
+	var grid_box_mesh := BoxMesh.new()
+	grid_box_mesh.size = Vector3(2.2, 0.02, 4.2)
+	grid_box_mesh.material = stripe_mat
+
+	var grid_slots_container := Node3D.new()
+	grid_slots_container.name = "StartingGrid"
+	add_child(grid_slots_container)
+
+	for lane_x in [-4.5, -1.5, 1.5, 4.5]:
+		var grid_box := MeshInstance3D.new()
+		grid_box.mesh = grid_box_mesh
+		grid_box.position = Vector3(lane_x, 0.012, 0.0)
+		grid_slots_container.add_child(grid_box)
 
 	# 5. Red & White Curbs
 	var curb_box := BoxMesh.new()
@@ -248,11 +274,13 @@ func _setup_finish_line() -> void:
 	area.body_entered.connect(_on_finish_area_body_entered)
 
 func _on_finish_area_body_entered(body: Node3D) -> void:
-	if finish_triggered:
+	if body in finished_cars:
 		return
 	if body.has_method("finish_race") or body.name.to_lower().contains("car"):
-		finish_triggered = true
-		player_crossed_finish_line.emit()
+		finished_cars.append(body)
+		car_crossed_finish_line.emit(body)
+		if body is PlayerCar or body.name == "Car":
+			player_crossed_finish_line.emit()
 
 func reset_finish() -> void:
-	finish_triggered = false
+	finished_cars.clear()
