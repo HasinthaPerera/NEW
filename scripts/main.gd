@@ -26,7 +26,9 @@ func _ready() -> void:
 	# Connect Track signals
 	track.player_crossed_finish_line.connect(_on_player_won)
 
-	# Initial UI state
+	# Initial UI state & display first random sentence
+	typing_manager.reset_sentences()
+	hud.update_sentence_display(typing_manager.current_target_sentence, "", false)
 	hud.update_distance(0.0, track.track_length)
 	hud.update_speed(0.0, car.max_normal_speed_kmh, false)
 
@@ -84,5 +86,6 @@ func restart_race() -> void:
 	track.reset_finish()
 	typing_manager.reset_sentences()
 	hud.reset_hud()
+	hud.update_sentence_display(typing_manager.current_target_sentence, "", false)
 	hud.update_distance(0.0, track.track_length)
 	hud.update_speed(0.0, car.max_normal_speed_kmh, false)

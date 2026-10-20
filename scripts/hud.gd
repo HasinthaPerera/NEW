@@ -31,7 +31,7 @@ func _process(delta: float) -> void:
 	if not is_race_ended:
 		if not input_line.has_focus():
 			input_line.grab_focus()
-		
+
 		# Shake input panel if error was made
 		if input_shake_timer > 0.0:
 			input_shake_timer -= delta
@@ -54,31 +54,46 @@ func update_sentence_display(target: String, typed: String, has_error: bool) -> 
 	var target_len := target.length()
 	var typed_len := typed.length()
 
+	# Visual color indicator in the input field
 	if has_error:
-		# Find the common prefix
-		var common_len := 0
-		while common_len < typed_len and common_len < target_len:
-			if typed[common_len] == target[common_len]:
-				common_len += 1
-			else:
-				break
-
-		var correct_part := target.substr(0, common_len)
-		var error_target_char := target.substr(common_len, 1)
-		var remaining := target.substr(common_len + 1)
-
-		bb += "[color=#22c55e]" + correct_part + "[/color]"
-		bb += "[color=#ffffff][bgcolor=#dc2626][u]" + (error_target_char if error_target_char != "" else " ") + "[/u][/bgcolor][/color]"
-		bb += "[color=#94a3b8]" + remaining + "[/color]"
+		input_line.add_theme_color_override("font_color", Color(0.96, 0.28, 0.28))
 	else:
-		var matched := target.substr(0, typed_len)
-		var next_char := target.substr(typed_len, 1)
-		var remaining := target.substr(typed_len + 1)
+		input_line.add_theme_color_override("font_color", Color(0.25, 0.90, 0.45))
 
-		bb += "[color=#22c55e]" + matched + "[/color]"
-		if next_char != "":
-			bb += "[color=#f59e0b][u]" + next_char + "[/u][/color]"
-		bb += "[color=#e2e8f0]" + remaining + "[/color]"
+	var typed_matching := true
+
+	for i in range(target_len):
+		var target_char := target.substr(i, 1)
+		var escaped_char := target_char
+		if target_char == "[":
+			escaped_char = "[lb]"
+		elif target_char == "]":
+			escaped_char = "[rb]"
+
+		if i < typed_len:
+			var typed_char := typed.substr(i, 1)
+			if typed_matching and typed_char == target_char:
+				# Correctly typed characters in green
+				bb += "[color=#22c55e]" + escaped_char + "[/color]"
+			else:
+				# Incorrectly typed characters highlighted in bold red with background
+				typed_matching = false
+				var display_symbol := escaped_char if target_char != " " else "_"
+				bb += "[color=#ffffff][bgcolor=#dc2626]" + display_symbol + "[/bgcolor][/color]"
+		elif i == typed_len:
+			# Current cursor character to type next
+			if typed_matching:
+				bb += "[color=#f59e0b][u]" + escaped_char + "[/u][/color]"
+			else:
+				bb += "[color=#64748b]" + escaped_char + "[/color]"
+		else:
+			# Remaining untyped characters
+			bb += "[color=#94a3b8]" + escaped_char + "[/color]"
+
+	# Overflow characters typed past target sentence length
+	if typed_len > target_len:
+		var extra := typed.substr(target_len)
+		bb += " [color=#ffffff][bgcolor=#b91c1c][i]+" + extra + "[/i][/bgcolor][/color]"
 
 	sentence_display.text = bb
 
@@ -89,7 +104,7 @@ func update_speed(current_kmh: float, max_kmh: float, is_nitro: bool) -> void:
 	speed_label.text = "%d KM/H" % int(round(current_kmh))
 	speed_bar.max_value = max_kmh
 	speed_bar.value = current_kmh
-	
+
 	if is_nitro:
 		speed_label.add_theme_color_override("font_color", Color(0.96, 0.72, 0.15))
 	else:
@@ -111,12 +126,12 @@ func show_win_screen(final_time: float, top_speed: float, wpm: float, accuracy: 
 	is_race_ended = true
 	input_line.editable = false
 	win_modal.visible = true
-	
+
 	var time_str := "%.2f s" % final_time
 	var speed_str := "%d KM/H" % int(top_speed)
 	var wpm_str := "%d WPM" % int(wpm)
 	var acc_str := "%.1f %%" % accuracy
-	
+
 	win_stats_label.text = "TIME: %s   |   TOP SPEED: %s\nTYPING SPEED: %s   |   ACCURACY: %s" % [
 		time_str, speed_str, wpm_str, acc_str
 	]

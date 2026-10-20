@@ -17,11 +17,15 @@ const SENTENCES: Array[String] = [
 	"Nitro is ready to ignite the straightaway now.",
 	"Feel the thunderous roar of the turbocharged engine.",
 	"Speed is a craft honed by quick and accurate hands.",
-	"Push beyond every limit to claim first place today."
+	"Push beyond every limit to claim first place today.",
+	"Smooth acceleration wins the race on every straight.",
+	"Full throttle ahead as the tires grip the asphalt.",
+	"Master the keyboard and leave the competition behind.",
+	"Lightning fast reflexes pave the way to victory.",
+	"Feel the rush of wind as your speed climbs higher."
 ]
 
-var sentence_list: Array[String] = []
-var sentence_index: int = 0
+var sentence_pool: Array[String] = []
 var current_target_sentence: String = ""
 var last_input_text: String = ""
 
@@ -35,31 +39,34 @@ func _ready() -> void:
 	reset_sentences()
 
 func reset_sentences() -> void:
-	sentence_list = SENTENCES.duplicate()
-	sentence_list.shuffle()
-	sentence_index = 0
+	sentence_pool = SENTENCES.duplicate()
+	sentence_pool.shuffle()
 	total_keystrokes = 0
 	correct_keystrokes = 0
 	error_keystrokes = 0
 	start_time_msec = 0
 	is_racing = false
 	last_input_text = ""
-	_load_current_sentence()
+	_load_next_sentence()
 
-func _load_current_sentence() -> void:
-	if sentence_index >= sentence_list.size():
-		sentence_index = 0
-		sentence_list.shuffle()
-	current_target_sentence = sentence_list[sentence_index]
+func _load_next_sentence() -> void:
+	if sentence_pool.is_empty():
+		sentence_pool = SENTENCES.duplicate()
+		sentence_pool.shuffle()
+		# Avoid picking the exact same sentence consecutively if possible
+		if sentence_pool.size() > 1 and sentence_pool[0] == current_target_sentence:
+			var swapped: String = sentence_pool.pop_front()
+			sentence_pool.push_back(swapped)
+
+	current_target_sentence = sentence_pool.pop_front()
 	last_input_text = ""
 	sentence_updated.emit(current_target_sentence, "", false)
 
 func on_input_changed(new_text: String) -> bool:
-	if not is_racing:
+	if not is_racing and new_text.length() > 0:
 		is_racing = true
 		start_time_msec = Time.get_ticks_msec()
 
-	var target_len := current_target_sentence.length()
 	var input_len := new_text.length()
 	var was_backspace := input_len < last_input_text.length()
 
@@ -80,12 +87,11 @@ func on_input_changed(new_text: String) -> bool:
 	last_input_text = new_text
 	_emit_stats()
 
-	# Sentence completion
+	# Sentence completion check
 	if new_text == current_target_sentence:
 		sentence_completed.emit(current_target_sentence)
-		sentence_index += 1
-		_load_current_sentence()
-		return true # signal to clear the input field
+		_load_next_sentence()
+		return true # Signal to clear the input field
 
 	sentence_updated.emit(current_target_sentence, new_text, not is_match)
 	return false
