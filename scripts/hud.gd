@@ -212,7 +212,7 @@ func show_race_results(standings: Array, player_stats: Dictionary) -> void:
 	# Build Standings Table
 	for entry in standings:
 		var row := HBoxContainer.new()
-		row.theme_override_constants.separation = 16
+		row.add_theme_constant_override("separation", 16)
 
 		var rank_lbl := Label.new()
 		rank_lbl.custom_minimum_size = Vector2(50, 0)
@@ -224,13 +224,13 @@ func show_race_results(standings: Array, player_stats: Dictionary) -> void:
 			3: medal = "🥉 3rd"
 			_: medal = "   4th"
 		rank_lbl.text = medal
-		rank_lbl.theme_override_font_sizes.font_size = 18
+		rank_lbl.add_theme_font_size_override("font_size", 18)
 
 		var name_lbl := Label.new()
 		name_lbl.custom_minimum_size = Vector2(200, 0)
 		var is_player: bool = entry.get("is_player", false)
 		name_lbl.text = entry.get("name", "Racer")
-		name_lbl.theme_override_font_sizes.font_size = 18
+		name_lbl.add_theme_font_size_override("font_size", 18)
 		if is_player:
 			name_lbl.add_theme_color_override("font_color", Color(0.3, 0.75, 1.0))
 		else:
@@ -240,7 +240,7 @@ func show_race_results(standings: Array, player_stats: Dictionary) -> void:
 		time_lbl.custom_minimum_size = Vector2(100, 0)
 		var r_time: float = entry.get("time", 0.0)
 		time_lbl.text = "%.2fs" % r_time if r_time > 0.0 else "Finished"
-		time_lbl.theme_override_font_sizes.font_size = 18
+		time_lbl.add_theme_font_size_override("font_size", 18)
 		time_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 
 		row.add_child(rank_lbl)
