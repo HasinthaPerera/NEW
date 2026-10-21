@@ -34,8 +34,6 @@ var is_nitro_active: bool = false
 var nitro_timer: float = 0.0
 
 @onready var visuals: Node3D = $Visuals
-@onready var body_mesh: MeshInstance3D = $Visuals/Body
-@onready var spoiler_wing: MeshInstance3D = $Visuals/SpoilerWing
 @onready var wheels: Node3D = $Visuals/Wheels
 @onready var nitro_flame: MeshInstance3D = $Visuals/NitroFlame
 
@@ -48,15 +46,21 @@ func _ready() -> void:
 		nitro_flame.visible = false
 
 func _apply_car_material() -> void:
-	if not body_mesh:
-		return
 	var mat := StandardMaterial3D.new()
 	mat.albedo_color = car_color
-	mat.metallic = 0.6
-	mat.roughness = 0.25
-	body_mesh.material_override = mat
-	if spoiler_wing:
-		spoiler_wing.material_override = mat
+	mat.metallic = 0.7
+	mat.roughness = 0.2
+
+	var body_paths: Array[NodePath] = [
+		^"Visuals/BodyGroup/MainBody",
+		^"Visuals/BodyGroup/FrontHood",
+		^"Visuals/CabinGroup/Roof",
+		^"Visuals/SpoilerGroup/WingBlade"
+	]
+	for path in body_paths:
+		var node := get_node_or_null(path)
+		if node is MeshInstance3D:
+			node.material_override = mat
 
 func apply_difficulty(diff: String) -> void:
 	difficulty = diff
