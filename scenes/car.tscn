@@ -153,7 +153,7 @@ size = Vector3(0.08, 0.14, 0.12)
 script = ExtResource("1_car_script")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1713731871]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.06225647, 0.48, 0.00819622)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 0)
 shape = SubResource("BoxShape3D_car")
 
 [node name="Visuals" type="Node3D" parent="." unique_id=1906196808]
@@ -161,89 +161,89 @@ shape = SubResource("BoxShape3D_car")
 [node name="BodyGroup" type="Node3D" parent="Visuals" unique_id=742412635]
 
 [node name="ChassisBase" type="MeshInstance3D" parent="Visuals/BodyGroup" unique_id=1038050685]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.06225647, 0.18, 0.00819622)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18, 0)
 mesh = SubResource("BoxMesh_chassis")
 
 [node name="FrontSplitter" type="MeshInstance3D" parent="Visuals/BodyGroup" unique_id=1260856157]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.61871743, 0.120000005, -2.0685444)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12, -2.15)
 mesh = SubResource("BoxMesh_splitter")
 
 [node name="MainBody" type="MeshInstance3D" parent="Visuals/BodyGroup" unique_id=207684548]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.04931552, 0.45, 0.056492507)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0.05)
 mesh = SubResource("BoxMesh_main_body")
 
 [node name="FrontHood" type="MeshInstance3D" parent="Visuals/BodyGroup" unique_id=439156574]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.4116622, 0.4, -1.2958037)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4, -1.35)
 mesh = SubResource("BoxMesh_hood")
 
 [node name="HoodScoop" type="MeshInstance3D" parent="Visuals/BodyGroup" unique_id=484126865]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.37283933, 0.58, -1.1509148)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58, -1.2)
 mesh = SubResource("BoxMesh_hood_scoop")
 
 [node name="RearDiffuser" type="MeshInstance3D" parent="Visuals/BodyGroup" unique_id=1739449308]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, -0.42949972, 0.25, 1.8434552)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.25, 1.9)
 mesh = SubResource("BoxMesh_diffuser")
 
 [node name="ExhaustL" type="MeshInstance3D" parent="Visuals/BodyGroup" unique_id=1614829525]
-transform = Transform3D(0.9659258, -0.25881904, 0, 0, 0, -1, 0.25881904, 0.9659258, 0, -0.8322785, 0.25, 1.9943502)
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, -0.35, 0.25, 2.15)
 mesh = SubResource("CylinderMesh_exhaust")
 
 [node name="ExhaustR" type="MeshInstance3D" parent="Visuals/BodyGroup" unique_id=1069855488]
-transform = Transform3D(0.9659258, -0.25881904, 0, 0, 0, -1, 0.25881904, 0.9659258, 0, -0.15613045, 0.25, 2.1755235)
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0.35, 0.25, 2.15)
 mesh = SubResource("CylinderMesh_exhaust")
 
 [node name="CabinGroup" type="Node3D" parent="Visuals" unique_id=375225113]
 
 [node name="Roof" type="MeshInstance3D" parent="Visuals/CabinGroup" unique_id=2042750791]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.03637457, 0.85, 0.104788795)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.85, 0.1)
 mesh = SubResource("BoxMesh_roof")
 
 [node name="Windshield" type="MeshInstance3D" parent="Visuals/CabinGroup" unique_id=82009231]
-transform = Transform3D(0.9659258, 0.080751546, -0.24587809, 0, 0.95, 0.312, 0.25881904, -0.30136886, 0.91762954, 0.23048884, 0.74, -0.6196555)
+transform = Transform3D(1, 0, 0, 0, 0.95, 0.312, 0, -0.312, 0.95, 0, 0.74, -0.65)
 mesh = SubResource("BoxMesh_windshield")
 
 [node name="RearWindow" type="MeshInstance3D" parent="Visuals/CabinGroup" unique_id=640113741]
-transform = Transform3D(0.9659258, -0.06703413, -0.2500192, 0, 0.966, -0.259, 0.25881904, 0.2501748, 0.93308437, -0.15773973, 0.76, 0.82923317)
+transform = Transform3D(1, 0, 0, 0, 0.966, -0.259, 0, 0.259, 0.966, 0, 0.76, 0.85)
 mesh = SubResource("BoxMesh_rear_window")
 
 [node name="SideWindows" type="MeshInstance3D" parent="Visuals/CabinGroup" unique_id=365719030]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.03637457, 0.8, 0.104788795)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, 0.1)
 mesh = SubResource("BoxMesh_side_windows")
 
 [node name="SpoilerGroup" type="Node3D" parent="Visuals" unique_id=517480154]
 
 [node name="PylonL" type="MeshInstance3D" parent="Visuals/SpoilerGroup" unique_id=465830036]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, -0.97023237, 0.85, 1.543275)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6, 0.85, 1.75)
 mesh = SubResource("BoxMesh_wing_pylon")
 
 [node name="PylonR" type="MeshInstance3D" parent="Visuals/SpoilerGroup" unique_id=1439268948]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.18887867, 0.85, 1.8538579)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6, 0.85, 1.75)
 mesh = SubResource("BoxMesh_wing_pylon")
 
 [node name="WingBlade" type="MeshInstance3D" parent="Visuals/SpoilerGroup" unique_id=71758747]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, -0.4036178, 1.05, 1.7468626)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 1.8)
 mesh = SubResource("BoxMesh_wing_blade")
 
 [node name="EndplateL" type="MeshInstance3D" parent="Visuals/SpoilerGroup" unique_id=1684379217]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, -1.3019288, 1.05, 1.506161)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.93, 1.05, 1.8)
 mesh = SubResource("BoxMesh_wing_endplate")
 
 [node name="EndplateR" type="MeshInstance3D" parent="Visuals/SpoilerGroup" unique_id=300408715]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.49469322, 1.05, 1.9875643)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.93, 1.05, 1.8)
 mesh = SubResource("BoxMesh_wing_endplate")
 
 [node name="LightsGroup" type="Node3D" parent="Visuals" unique_id=1924883306]
 
 [node name="HeadlightL" type="MeshInstance3D" parent="Visuals/LightsGroup" unique_id=830680259]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, -0.04795723, 0.44, -2.091888)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65, 0.44, -2)
 mesh = SubResource("BoxMesh_headlight")
 
 [node name="HeadlightR" type="MeshInstance3D" parent="Visuals/LightsGroup" unique_id=609239416]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 1.2077463, 0.44, -1.7554232)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.65, 0.44, -2)
 mesh = SubResource("BoxMesh_headlight")
 
 [node name="TaillightBar" type="MeshInstance3D" parent="Visuals/LightsGroup" unique_id=1330977401]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, -0.46832258, 0.58, 1.9883441)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58, 2.05)
 mesh = SubResource("BoxMesh_taillight_bar")
 
 [node name="NitroFlame" type="MeshInstance3D" parent="Visuals" unique_id=1577075110]
@@ -257,76 +257,76 @@ mesh = SubResource("BoxMesh_nitro")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.98, 0.36, -1.25)
 
 [node name="Tire" type="MeshInstance3D" parent="Visuals/Wheels/WheelFL" unique_id=1369489093]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, 0.419173, 0, -0.20285368)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_tire")
 
 [node name="Rim" type="MeshInstance3D" parent="Visuals/Wheels/WheelFL" unique_id=1626463071]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, 0.419173, 0, -0.20285368)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_rim")
 
 [node name="Hub" type="MeshInstance3D" parent="Visuals/Wheels/WheelFL" unique_id=1859171328]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, 0.419173, 0, -0.20285368)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_hub")
 
 [node name="Caliper" type="MeshInstance3D" parent="Visuals/Wheels/WheelFL" unique_id=16641187]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.49644703, 0.120000005, -0.1821481)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 0.12, 0)
 mesh = SubResource("BoxMesh_caliper")
 
 [node name="WheelFR" type="Node3D" parent="Visuals/Wheels" unique_id=438424085]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.98, 0.36, -1.25)
 
 [node name="Tire" type="MeshInstance3D" parent="Visuals/Wheels/WheelFR" unique_id=263105869]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, 0.35238755, 0, 0.30443168)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_tire")
 
 [node name="Rim" type="MeshInstance3D" parent="Visuals/Wheels/WheelFR" unique_id=1567843686]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, 0.35238755, 0, 0.30443168)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_rim")
 
 [node name="Hub" type="MeshInstance3D" parent="Visuals/Wheels/WheelFR" unique_id=1552670921]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, 0.35238755, 0, 0.30443168)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_hub")
 
 [node name="Caliper" type="MeshInstance3D" parent="Visuals/Wheels/WheelFR" unique_id=1358345387]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, 0.27511358, 0.120000005, 0.2837261)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08, 0.12, 0)
 mesh = SubResource("BoxMesh_caliper")
 
 [node name="WheelRL" type="Node3D" parent="Visuals/Wheels" unique_id=1294806964]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.98, 0.36, 1.25)
 
 [node name="Tire" type="MeshInstance3D" parent="Visuals/Wheels/WheelRL" unique_id=1774447301]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, -0.22787464, 0, -0.2880392)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_tire")
 
 [node name="Rim" type="MeshInstance3D" parent="Visuals/Wheels/WheelRL" unique_id=913614248]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, -0.22787464, 0, -0.2880392)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_rim")
 
 [node name="Hub" type="MeshInstance3D" parent="Visuals/Wheels/WheelRL" unique_id=2093432164]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, -0.22787464, 0, -0.2880392)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_hub")
 
 [node name="Caliper" type="MeshInstance3D" parent="Visuals/Wheels/WheelRL" unique_id=1421837625]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, -0.15060055, 0.120000005, -0.26733363)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 0.12, 0)
 mesh = SubResource("BoxMesh_caliper")
 
 [node name="WheelRR" type="Node3D" parent="Visuals/Wheels" unique_id=1038807245]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.98, 0.36, 1.25)
 
 [node name="Tire" type="MeshInstance3D" parent="Visuals/Wheels/WheelRR" unique_id=1348371561]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, -0.2946601, 0, 0.21924615)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_tire")
 
 [node name="Rim" type="MeshInstance3D" parent="Visuals/Wheels/WheelRR" unique_id=1150718867]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, -0.2946601, 0, 0.21924615)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_rim")
 
 [node name="Hub" type="MeshInstance3D" parent="Visuals/Wheels/WheelRR" unique_id=1617153968]
-transform = Transform3D(0, -0.9659258, -0.25881904, 1, 0, 0, 0, -0.25881904, 0.9659258, -0.2946601, 0, 0.21924615)
+transform = Transform3D(0, -1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_hub")
 
 [node name="Caliper" type="MeshInstance3D" parent="Visuals/Wheels/WheelRR" unique_id=1437744384]
-transform = Transform3D(0.9659258, 0, -0.25881904, 0, 1, 0, 0.25881904, 0, 0.9659258, -0.37193406, 0.120000005, 0.19854057)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.08, 0.12, 0)
 mesh = SubResource("BoxMesh_caliper")
 
 [node name="CameraPivot" type="Node3D" parent="." unique_id=250532491]
