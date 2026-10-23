@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://c8y3sp0rtsmod3l"]
+[gd_scene format=3 uid="uid://dt3onb3lpvwmx"]
 
 [ext_resource type="Script" path="res://scripts/sports_car_visuals.gd" id="1_visuals_script"]
 
