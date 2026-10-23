@@ -26,14 +26,21 @@ var car_color: Color = Color(0.12, 0.48, 0.96)
 var finish_rank: int = 0
 var finish_time: float = 0.0
 
+@export var camera_follow_speed: float = 14.0
+var camera_offset: Vector3 = Vector3(0.0, 1.2, 0.0)
+
 @onready var wheels: Node3D = $Visuals/Wheels
 @onready var nitro_flame: Node3D = $Visuals/NitroFlame
+@onready var camera_pivot: Node3D = $CameraPivot
 @onready var camera_3d: Camera3D = $CameraPivot/Camera3D
 
 func _ready() -> void:
 	start_z = global_position.z
 	if nitro_flame:
 		nitro_flame.visible = false
+	if camera_pivot:
+		camera_pivot.top_level = true
+		camera_pivot.global_position = global_position + camera_offset
 
 func _physics_process(delta: float) -> void:
 	if is_race_finished:
@@ -70,6 +77,12 @@ func _physics_process(delta: float) -> void:
 		var wheel_spin: float = speed_mps * delta * 5.0
 		for wheel in wheels.get_children():
 			wheel.rotate_x(wheel_spin)
+
+	# Smooth frame-rate-independent third-person camera following
+	if camera_pivot:
+		var target_pos: Vector3 = global_position + camera_offset
+		var t: float = 1.0 - exp(-camera_follow_speed * delta)
+		camera_pivot.global_position = camera_pivot.global_position.lerp(target_pos, t)
 
 	# Dynamic camera FOV for speed sensation
 	if camera_3d:
@@ -146,5 +159,7 @@ func reset_car(pos: Vector3 = Vector3.ZERO) -> void:
 	finish_rank = 0
 	finish_time = 0.0
 	end_nitro()
+	if camera_pivot:
+		camera_pivot.global_position = global_position + camera_offset
 	if camera_3d:
 		camera_3d.fov = 74.0
