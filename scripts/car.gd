@@ -22,29 +22,37 @@ var start_z: float = 0.0
 var distance_traveled: float = 0.0
 var time_since_last_keystroke: float = 0.0
 var car_name: String = "Player (You)"
-var car_color: Color = Color(0.12, 0.48, 0.96)
+var car_color: Color = Color(0.98, 0.44, 0.05, 1.0) # Modern Metallic Muscle Orange
 var finish_rank: int = 0
 var finish_time: float = 0.0
 
 @export var camera_follow_speed: float = 14.0
 var camera_offset: Vector3 = Vector3(0.0, 1.2, 0.0)
 
-@onready var wheels: Node3D = $Visuals/Wheels
-@onready var nitro_flame: Node3D = $Visuals/NitroFlame
+@onready var car_visuals: SportsCarVisuals = $SportsCarVisuals
+@onready var visuals: SportsCarVisuals = $SportsCarVisuals
+@onready var wheels: Node3D = $SportsCarVisuals/Wheels
 @onready var camera_pivot: Node3D = $CameraPivot
 @onready var camera_3d: Camera3D = $CameraPivot/Camera3D
 
+func get_car_visuals() -> SportsCarVisuals:
+	if not car_visuals:
+		car_visuals = get_node_or_null(^"SportsCarVisuals") as SportsCarVisuals
+	return car_visuals
+
 func _ready() -> void:
 	start_z = global_position.z
-	if nitro_flame:
-		nitro_flame.visible = false
+	var v := get_car_visuals()
+	if v:
+		v.set_paint_color(car_color)
+		v.set_nitro_active(false)
 	if camera_pivot:
 		camera_pivot.top_level = true
 		camera_pivot.global_position = global_position + camera_offset
 
 func _physics_process(delta: float) -> void:
 	if is_race_finished:
-		# Gradually slow down to a stop upon winning
+		# Gradually slow down to a stop upon finishing
 		target_speed_kmh = move_toward(target_speed_kmh, 0.0, 35.0 * delta)
 		current_speed_kmh = move_toward(current_speed_kmh, target_speed_kmh, 25.0 * delta)
 	else:
@@ -72,11 +80,10 @@ func _physics_process(delta: float) -> void:
 	# Compute total forward distance traveled
 	distance_traveled = maxf(0.0, start_z - global_position.z)
 
-	# Spin wheels proportionally to ground speed
-	if wheels:
+	# Spin alloy wheels proportionally to ground speed
+	if car_visuals:
 		var wheel_spin: float = speed_mps * delta * 5.0
-		for wheel in wheels.get_children():
-			wheel.rotate_x(wheel_spin)
+		car_visuals.spin_wheels(wheel_spin)
 
 	# Smooth frame-rate-independent third-person camera following
 	if camera_pivot:
@@ -88,11 +95,6 @@ func _physics_process(delta: float) -> void:
 	if camera_3d:
 		var target_fov: float = 85.0 if is_nitro_active else 74.0
 		camera_3d.fov = lerpf(camera_3d.fov, target_fov, 4.5 * delta)
-
-	# Nitro exhaust flame animation
-	if is_nitro_active and nitro_flame:
-		var pulse: float = 1.0 + 0.3 * sin(Time.get_ticks_msec() * 0.035)
-		nitro_flame.scale = Vector3(pulse, pulse, pulse * 1.4)
 
 	var active_max: float = max_nitro_speed_kmh if is_nitro_active else max_normal_speed_kmh
 	speed_changed.emit(current_speed_kmh, active_max)
@@ -124,15 +126,15 @@ func activate_nitro() -> void:
 	is_nitro_active = true
 	nitro_timer = nitro_duration
 	time_since_last_keystroke = 0.0
-	if nitro_flame:
-		nitro_flame.visible = true
+	if car_visuals:
+		car_visuals.set_nitro_active(true)
 	target_speed_kmh = clampf(target_speed_kmh + nitro_boost_amount_kmh, 45.0, max_nitro_speed_kmh)
 
 func end_nitro() -> void:
 	is_nitro_active = false
 	nitro_timer = 0.0
-	if nitro_flame:
-		nitro_flame.visible = false
+	if car_visuals:
+		car_visuals.set_nitro_active(false)
 	if target_speed_kmh > max_normal_speed_kmh:
 		target_speed_kmh = max_normal_speed_kmh
 
@@ -146,10 +148,16 @@ func finish_race(rank: int = 0, race_time: float = 0.0) -> void:
 
 func reset_car(pos: Vector3 = Vector3.ZERO) -> void:
 	if pos != Vector3.ZERO:
-		global_position = pos
+		if is_inside_tree():
+			global_position = pos
+		else:
+			position = pos
 		start_z = pos.z
 	else:
-		global_position.z = start_z
+		if is_inside_tree():
+			global_position.z = start_z
+		else:
+			position.z = start_z
 	current_speed_kmh = 0.0
 	target_speed_kmh = 0.0
 	distance_traveled = 0.0
@@ -159,6 +167,10 @@ func reset_car(pos: Vector3 = Vector3.ZERO) -> void:
 	finish_rank = 0
 	finish_time = 0.0
 	end_nitro()
+	var v := get_car_visuals()
+	if v:
+		v.set_paint_color(car_color)
+		v.set_nitro_active(false)
 	if camera_pivot:
 		camera_pivot.global_position = global_position + camera_offset
 	if camera_3d:

@@ -51,18 +51,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0)
 
 [node name="AICar1" parent="." instance=ExtResource("4_ai_car")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0, 0)
-car_name = "Red Fury"
-car_color = Color(0.92, 0.22, 0.22, 1)
+car_name = "Blue Thunder"
+car_color = Color(0.12, 0.48, 0.96, 1)
 
 [node name="AICar2" parent="." instance=ExtResource("4_ai_car")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0)
-car_name = "Yellow Lightning"
-car_color = Color(0.96, 0.78, 0.15, 1)
+car_name = "Red Fury"
+car_color = Color(0.92, 0.16, 0.16, 1)
 
 [node name="AICar3" parent="." instance=ExtResource("4_ai_car")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 0)
 car_name = "Green Viper"
-car_color = Color(0.18, 0.82, 0.35, 1)
+car_color = Color(0.16, 0.82, 0.35, 1)
 
 [node name="TypingManager" type="Node" parent="."]
 script = ExtResource("5_type")
