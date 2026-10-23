@@ -33,34 +33,28 @@ var sentence_length_target: int = 35
 var is_nitro_active: bool = false
 var nitro_timer: float = 0.0
 
-@onready var visuals: Node3D = $Visuals
-@onready var wheels: Node3D = $Visuals/Wheels
-@onready var nitro_flame: MeshInstance3D = $Visuals/NitroFlame
+@onready var car_visuals: SportsCarVisuals = $SportsCarVisuals
+@onready var visuals: SportsCarVisuals = $SportsCarVisuals
+@onready var wheels: Node3D = $SportsCarVisuals/Wheels
+
+func get_car_visuals() -> SportsCarVisuals:
+	if not car_visuals:
+		car_visuals = get_node_or_null(^"SportsCarVisuals") as SportsCarVisuals
+	return car_visuals
 
 func _ready() -> void:
 	start_z = global_position.z
 	start_x = global_position.x
 	_apply_car_material()
 	apply_difficulty(difficulty)
-	if nitro_flame:
-		nitro_flame.visible = false
+	var v := get_car_visuals()
+	if v:
+		v.set_nitro_active(false)
 
 func _apply_car_material() -> void:
-	var mat := StandardMaterial3D.new()
-	mat.albedo_color = car_color
-	mat.metallic = 0.7
-	mat.roughness = 0.2
-
-	var body_paths: Array[NodePath] = [
-		^"Visuals/BodyGroup/MainBody",
-		^"Visuals/BodyGroup/FrontHood",
-		^"Visuals/CabinGroup/Roof",
-		^"Visuals/SpoilerGroup/WingBlade"
-	]
-	for path in body_paths:
-		var node := get_node_or_null(path)
-		if node is MeshInstance3D:
-			node.material_override = mat
+	var v := get_car_visuals()
+	if v:
+		v.set_paint_color(car_color)
 
 func apply_difficulty(diff: String) -> void:
 	difficulty = diff
@@ -116,15 +110,9 @@ func _physics_process(delta: float) -> void:
 	distance_traveled = maxf(0.0, start_z - global_position.z)
 
 	# Spin wheels
-	if wheels:
+	if car_visuals:
 		var wheel_spin: float = speed_mps * delta * 5.0
-		for wheel in wheels.get_children():
-			wheel.rotate_x(wheel_spin)
-
-	# Nitro flame animation
-	if is_nitro_active and nitro_flame:
-		var pulse: float = 1.0 + 0.3 * sin(Time.get_ticks_msec() * 0.035)
-		nitro_flame.scale = Vector3(pulse, pulse, pulse * 1.4)
+		car_visuals.spin_wheels(wheel_spin)
 
 func _process_ai_typing(delta: float) -> void:
 	if error_pause_timer > 0.0:
@@ -162,8 +150,8 @@ func _simulate_keystroke() -> void:
 func _activate_ai_nitro() -> void:
 	is_nitro_active = true
 	nitro_timer = 2.8
-	if nitro_flame:
-		nitro_flame.visible = true
+	if car_visuals:
+		car_visuals.set_nitro_active(true)
 	target_speed_kmh = clampf(target_speed_kmh + 28.0, 40.0, base_target_speed + 35.0)
 
 func _process_nitro(delta: float) -> void:
@@ -171,8 +159,8 @@ func _process_nitro(delta: float) -> void:
 		nitro_timer -= delta
 		if nitro_timer <= 0.0:
 			is_nitro_active = false
-			if nitro_flame:
-				nitro_flame.visible = false
+			if car_visuals:
+				car_visuals.set_nitro_active(false)
 			if target_speed_kmh > base_target_speed:
 				target_speed_kmh = base_target_speed
 
@@ -183,11 +171,14 @@ func finish_race(rank: int, race_time: float) -> void:
 	finish_rank = rank
 	finish_time = race_time
 	is_nitro_active = false
-	if nitro_flame:
-		nitro_flame.visible = false
+	if car_visuals:
+		car_visuals.set_nitro_active(false)
 
 func reset_car(pos: Vector3) -> void:
-	global_position = pos
+	if is_inside_tree():
+		global_position = pos
+	else:
+		position = pos
 	start_z = pos.z
 	start_x = pos.x
 	current_speed_kmh = 0.0
@@ -200,5 +191,7 @@ func reset_car(pos: Vector3) -> void:
 	keystroke_timer = 0.0
 	error_pause_timer = 0.0
 	is_nitro_active = false
-	if nitro_flame:
-		nitro_flame.visible = false
+	var v := get_car_visuals()
+	if v:
+		v.set_nitro_active(false)
+		v.set_paint_color(car_color)
