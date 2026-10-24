@@ -1,0 +1,412 @@
+[gd_scene load_steps=18 format=3 uid="uid://d1x6m4inm3nu"]
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_menu_script"]
+[ext_resource type="PackedScene" path="res://scenes/sports_car_visuals.tscn" id="2_car_visuals"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_Material"]
+sky_top_color = Color(0.06, 0.08, 0.12, 1)
+sky_horizon_color = Color(0.12, 0.16, 0.22, 1)
+ground_bottom_color = Color(0.02, 0.03, 0.05, 1)
+ground_horizon_color = Color(0.1, 0.13, 0.18, 1)
+
+[sub_resource type="Sky" id="Sky_Env"]
+sky_material = SubResource("Sky_Material")
+
+[sub_resource type="Environment" id="Environment_Menu"]
+background_mode = 2
+sky = SubResource("Sky_Env")
+ambient_light_source = 2
+ambient_light_color = Color(0.24, 0.28, 0.36, 1)
+ambient_light_energy = 1.2
+tonemap_mode = 2
+tonemap_exposure = 1.15
+fog_enabled = true
+fog_light_color = Color(0.08, 0.1, 0.14, 1)
+fog_density = 0.008
+
+[sub_resource type="StandardMaterial3D" id="Mat_Floor"]
+albedo_color = Color(0.07, 0.08, 0.1, 1)
+metallic = 0.8
+roughness = 0.25
+
+[sub_resource type="CylinderMesh" id="Mesh_Floor"]
+material = SubResource("Mat_Floor")
+top_radius = 12.0
+bottom_radius = 12.0
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Mat_PedestalRim"]
+albedo_color = Color(0.05, 0.7, 1, 1)
+emission_enabled = true
+emission = Color(0.1, 0.75, 1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="TorusMesh" id="Mesh_PedestalRim"]
+material = SubResource("Mat_PedestalRim")
+inner_radius = 2.45
+outer_radius = 2.55
+
+[sub_resource type="StyleBoxFlat" id="Style_MenuPanel"]
+bg_color = Color(0.05, 0.07, 0.11, 0.88)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18, 0.25, 0.36, 0.9)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.5)
+shadow_size = 18
+
+[sub_resource type="StyleBoxFlat" id="Style_Badge"]
+bg_color = Color(0.08, 0.12, 0.18, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.98, 0.44, 0.05, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="Style_PlayBtn"]
+bg_color = Color(0.98, 0.44, 0.05, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.7, 0.3, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.98, 0.44, 0.05, 0.4)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="Style_PlayBtnHover"]
+bg_color = Color(1, 0.52, 0.12, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.9, 0.6, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(1, 0.52, 0.12, 0.6)
+shadow_size = 14
+
+[sub_resource type="StyleBoxFlat" id="Style_SecondaryBtn"]
+bg_color = Color(0.1, 0.14, 0.22, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.35, 0.5, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_SecondaryBtnHover"]
+bg_color = Color(0.16, 0.22, 0.34, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.75, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_ExitBtnHover"]
+bg_color = Color(0.4, 0.1, 0.12, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.9, 0.2, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_Modal"]
+bg_color = Color(0.06, 0.08, 0.12, 0.96)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.12, 0.55, 0.92, 0.9)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+shadow_color = Color(0, 0, 0, 0.7)
+shadow_size = 24
+
+[node name="MainMenu" type="Node3D"]
+script = ExtResource("1_menu_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_Menu")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 2, 6, 4)
+light_color = Color(1, 0.96, 0.9, 1)
+light_energy = 1.6
+shadow_enabled = true
+
+[node name="RimLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.707107, 0.353553, -0.612372, 0, 0.866025, 0.5, 0.707107, 0.353553, -0.612372, -3, 5, -4)
+light_color = Color(0.2, 0.6, 1, 1)
+light_energy = 1.4
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.956305, -0.0682424, 0.284347, 0, 0.97237, 0.233445, -0.292372, -0.223245, 0.929883, 1.8, 1.35, 4.2)
+fov = 48.0
+
+[node name="ShowroomFloor" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+mesh = SubResource("Mesh_Floor")
+
+[node name="Turntable" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.85, 0, 0)
+
+[node name="SportsCarVisuals" parent="Turntable" instance=ExtResource("2_car_visuals")]
+
+[node name="PedestalRing" type="MeshInstance3D" parent="Turntable"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+mesh = SubResource("Mesh_PedestalRim")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="MainMenuPanel" type="PanelContainer" parent="UI"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 460.0
+offset_bottom = -40.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("Style_MenuPanel")
+
+[node name="Margin" type="MarginContainer" parent="UI/MainMenuPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="VBox" type="VBoxContainer" parent="UI/MainMenuPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="HeaderBadge" type="Label" parent="UI/MainMenuPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "⚡ SPEEDWAY EDITION • GODOT 4"
+
+[node name="Title" type="Label" parent="UI/MainMenuPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.1, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
+theme_override_constants/shadow_offset_x = 2
+theme_override_constants/shadow_offset_y = 2
+theme_override_font_sizes/font_size = 38
+text = "TYPERACER 3D"
+
+[node name="Subtitle" type="Label" parent="UI/MainMenuPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.78, 0.9, 1)
+theme_override_font_sizes/font_size = 13
+text = "High-Octane Typing Racing Simulator"
+
+[node name="Divider" type="ColorRect" parent="UI/MainMenuPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0.98, 0.44, 0.05, 0.85)
+
+[node name="StatusBadge" type="Label" parent="UI/MainMenuPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("Style_Badge")
+text = "CAR: ORANGE  |  DIFFICULTY: MEDIUM"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="UI/MainMenuPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 2
+
+[node name="MenuButtons" type="VBoxContainer" parent="UI/MainMenuPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="PlayRaceButton" type="Button" parent="UI/MainMenuPanel/Margin/VBox/MenuButtons"]
+custom_minimum_size = Vector2(0, 56)
+layout_mode = 2
+focus_neighbor_top = NodePath("../ExitButton")
+focus_neighbor_bottom = NodePath("../GarageButton")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("Style_PlayBtn")
+theme_override_styles/hover = SubResource("Style_PlayBtnHover")
+theme_override_styles/pressed = SubResource("Style_PlayBtn")
+theme_override_styles/focus = SubResource("Style_PlayBtnHover")
+text = "▶  PLAY RACE"
+
+[node name="GarageButton" type="Button" parent="UI/MainMenuPanel/Margin/VBox/MenuButtons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+focus_neighbor_top = NodePath("../PlayRaceButton")
+focus_neighbor_bottom = NodePath("../SettingsButton")
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("Style_SecondaryBtn")
+theme_override_styles/hover = SubResource("Style_SecondaryBtnHover")
+theme_override_styles/pressed = SubResource("Style_SecondaryBtnHover")
+theme_override_styles/focus = SubResource("Style_SecondaryBtnHover")
+text = "🏎  CAR GARAGE"
+
+[node name="SettingsButton" type="Button" parent="UI/MainMenuPanel/Margin/VBox/MenuButtons"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+focus_neighbor_top = NodePath("../GarageButton")
+focus_neighbor_bottom = NodePath("../ExitButton")
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("Style_SecondaryBtn")
+theme_override_styles/hover = SubResource("Style_SecondaryBtnHover")
+theme_override_styles/pressed = SubResource("Style_SecondaryBtnHover")
+theme_override_styles/focus = SubResource("Style_SecondaryBtnHover")
+text = "⚙  SETTINGS"
+
+[node name="ExitButton" type="Button" parent="UI/MainMenuPanel/Margin/VBox/MenuButtons"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+focus_neighbor_top = NodePath("../SettingsButton")
+focus_neighbor_bottom = NodePath("../PlayRaceButton")
+theme_override_colors/font_color = Color(0.85, 0.85, 0.9, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("Style_SecondaryBtn")
+theme_override_styles/hover = SubResource("Style_ExitBtnHover")
+theme_override_styles/pressed = SubResource("Style_ExitBtnHover")
+theme_override_styles/focus = SubResource("Style_ExitBtnHover")
+text = "✖  EXIT"
+
+[node name="FooterSpacer" type="Control" parent="UI/MainMenuPanel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="FooterInfo" type="Label" parent="UI/MainMenuPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.55, 0.68, 1)
+theme_override_font_sizes/font_size = 11
+text = "Type Fast • Nitro Boost • Win the Race"
+horizontal_alignment = 1
+
+[node name="SettingsModal" type="PanelContainer" parent="UI"]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -230.0
+offset_top = -180.0
+offset_right = 230.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("Style_Modal")
+
+[node name="Margin" type="MarginContainer" parent="UI/SettingsModal"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="VBox" type="VBoxContainer" parent="UI/SettingsModal/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ModalTitle" type="Label" parent="UI/SettingsModal/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 0.75, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "⚙  GAME SETTINGS"
+horizontal_alignment = 1
+
+[node name="Divider" type="ColorRect" parent="UI/SettingsModal/Margin/VBox"]
+custom_minimum_size = Vector2(0, 1)
+layout_mode = 2
+color = Color(0.2, 0.45, 0.7, 0.8)
+
+[node name="VolumeRow" type="HBoxContainer" parent="UI/SettingsModal/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="VolumeLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/VolumeRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Master Volume"
+
+[node name="VolumeSlider" type="HSlider" parent="UI/SettingsModal/Margin/VBox/VolumeRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 80.0
+
+[node name="VolumeValLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/VolumeRow"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "80%"
+horizontal_alignment = 2
+
+[node name="SoundRow" type="HBoxContainer" parent="UI/SettingsModal/Margin/VBox"]
+layout_mode = 2
+
+[node name="SoundLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/SoundRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
+text = "Sound Effects"
+
+[node name="SoundToggle" type="CheckButton" parent="UI/SettingsModal/Margin/VBox/SoundRow"]
+layout_mode = 2
+button_pressed = true
+
+[node name="DiffRow" type="HBoxContainer" parent="UI/SettingsModal/Margin/VBox"]
+layout_mode = 2
+
+[node name="DiffLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/DiffRow"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "AI Difficulty"
+
+[node name="DiffOption" type="OptionButton" parent="UI/SettingsModal/Margin/VBox/DiffRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Spacer" type="Control" parent="UI/SettingsModal/Margin/VBox"]
+custom_minimum_size = Vector2(0, 10)
+layout_mode = 2
+
+[node name="CloseSettingsButton" type="Button" parent="UI/SettingsModal/Margin/VBox"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("Style_SecondaryBtn")
+theme_override_styles/hover = SubResource("Style_SecondaryBtnHover")
+text = "BACK / CLOSE"

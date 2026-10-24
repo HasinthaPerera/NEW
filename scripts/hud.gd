@@ -3,6 +3,7 @@ class_name RacingHUD
 
 signal input_text_changed(new_text: String)
 signal restart_requested
+signal menu_requested
 signal difficulty_changed(new_difficulty: String)
 
 @onready var sentence_display: RichTextLabel = $RootControl/TypingPanel/VBox/SentenceDisplay
@@ -26,7 +27,8 @@ signal difficulty_changed(new_difficulty: String)
 @onready var results_title: Label = $RootControl/ResultsModal/Margin/VBox/ResultsTitle
 @onready var standings_container: VBoxContainer = $RootControl/ResultsModal/Margin/VBox/StandingsContainer
 @onready var player_stats_label: Label = $RootControl/ResultsModal/Margin/VBox/PlayerStatsLabel
-@onready var restart_button: Button = $RootControl/ResultsModal/Margin/VBox/RestartButton
+@onready var restart_button: Button = $RootControl/ResultsModal/Margin/VBox/ButtonBox/RestartButton
+@onready var menu_button: Button = $RootControl/ResultsModal/Margin/VBox/ButtonBox/MenuButton
 
 var is_race_ended: bool = false
 var is_counting_down: bool = false
@@ -37,7 +39,10 @@ func _ready() -> void:
 	nitro_badge.visible = false
 	countdown_overlay.visible = false
 	input_line.text_changed.connect(_on_line_edit_text_changed)
-	restart_button.pressed.connect(_on_restart_button_pressed)
+	if restart_button:
+		restart_button.pressed.connect(_on_restart_button_pressed)
+	if menu_button:
+		menu_button.pressed.connect(_on_menu_button_pressed)
 
 	_setup_difficulty_options()
 	_ensure_input_focus()
@@ -271,7 +276,20 @@ func reset_hud() -> void:
 func _on_restart_button_pressed() -> void:
 	restart_requested.emit()
 
+func _on_menu_button_pressed() -> void:
+	menu_requested.emit()
+
+func set_difficulty_display(diff_name: String) -> void:
+	if not diff_option:
+		return
+	match diff_name:
+		"Easy": diff_option.selected = 0
+		"Medium": diff_option.selected = 1
+		"Hard": diff_option.selected = 2
+
 func _unhandled_input(event: InputEvent) -> void:
 	if is_race_ended:
 		if event is InputEventKey and event.pressed and (event.keycode == KEY_ENTER or event.keycode == KEY_SPACE):
 			restart_requested.emit()
+		elif event.is_action_pressed("ui_cancel"):
+			menu_requested.emit()

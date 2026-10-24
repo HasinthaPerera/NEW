@@ -1,0 +1,335 @@
+[gd_scene load_steps=20 format=3 uid="uid://cracesetupscene"]
+
+[ext_resource type="Script" path="res://scripts/race_setup.gd" id="1_setup_script"]
+[ext_resource type="PackedScene" path="res://scenes/sports_car_visuals.tscn" id="2_car_visuals"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_Setup"]
+sky_top_color = Color(0.06, 0.08, 0.12, 1)
+sky_horizon_color = Color(0.12, 0.16, 0.22, 1)
+ground_bottom_color = Color(0.02, 0.03, 0.05, 1)
+ground_horizon_color = Color(0.1, 0.13, 0.18, 1)
+
+[sub_resource type="Sky" id="Sky_Env"]
+sky_material = SubResource("Sky_Setup")
+
+[sub_resource type="Environment" id="Environment_Setup"]
+background_mode = 2
+sky = SubResource("Sky_Env")
+ambient_light_source = 2
+ambient_light_color = Color(0.24, 0.28, 0.36, 1)
+ambient_light_energy = 1.2
+tonemap_mode = 2
+tonemap_exposure = 1.15
+fog_enabled = true
+fog_light_color = Color(0.08, 0.1, 0.14, 1)
+fog_density = 0.008
+
+[sub_resource type="StandardMaterial3D" id="Mat_Floor"]
+albedo_color = Color(0.06, 0.07, 0.09, 1)
+metallic = 0.85
+roughness = 0.2
+
+[sub_resource type="CylinderMesh" id="Mesh_Floor"]
+material = SubResource("Mat_Floor")
+top_radius = 12.0
+bottom_radius = 12.0
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Mat_GridRing"]
+albedo_color = Color(0.1, 0.75, 1, 1)
+emission_enabled = true
+emission = Color(0.1, 0.75, 1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="TorusMesh" id="Mesh_GridRing"]
+material = SubResource("Mat_GridRing")
+inner_radius = 2.45
+outer_radius = 2.55
+
+[sub_resource type="StyleBoxFlat" id="Style_Panel"]
+bg_color = Color(0.05, 0.07, 0.11, 0.9)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.18, 0.26, 0.38, 0.9)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+shadow_color = Color(0, 0, 0, 0.6)
+shadow_size = 20
+
+[sub_resource type="StyleBoxFlat" id="Style_DiffBtn"]
+bg_color = Color(0.1, 0.14, 0.22, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.35, 0.5, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_DiffBtnHover"]
+bg_color = Color(0.16, 0.22, 0.34, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.75, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_Briefing"]
+bg_color = Color(0.08, 0.11, 0.16, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.16, 0.24, 0.35, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_StartBtn"]
+bg_color = Color(0.98, 0.44, 0.05, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.75, 0.4, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.98, 0.44, 0.05, 0.4)
+shadow_size = 12
+
+[sub_resource type="StyleBoxFlat" id="Style_StartBtnHover"]
+bg_color = Color(1, 0.55, 0.15, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.9, 0.6, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(1, 0.55, 0.15, 0.6)
+shadow_size = 16
+
+[sub_resource type="StyleBoxFlat" id="Style_SecondaryBtn"]
+bg_color = Color(0.1, 0.14, 0.22, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.35, 0.5, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_SecondaryBtnHover"]
+bg_color = Color(0.16, 0.22, 0.34, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.75, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="RaceSetup" type="Node3D"]
+script = ExtResource("1_setup_script")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_Setup")
+
+[node name="KeyLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 3, 7, 5)
+light_color = Color(1, 0.97, 0.92, 1)
+light_energy = 1.7
+shadow_enabled = true
+
+[node name="FillLight" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.707107, 0.353553, -0.612372, 0, 0.866025, 0.5, 0.707107, 0.353553, -0.612372, -4, 5, -4)
+light_color = Color(0.2, 0.6, 1, 1)
+light_energy = 1.3
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(0.956305, -0.0682424, 0.284347, 0, 0.97237, 0.233445, -0.292372, -0.223245, 0.929883, 2.0, 1.35, 4.0)
+fov = 48.0
+
+[node name="ShowroomFloor" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+mesh = SubResource("Mesh_Floor")
+
+[node name="CarPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7, 0, 0)
+
+[node name="SportsCarVisuals" parent="CarPivot" instance=ExtResource("2_car_visuals")]
+
+[node name="GridRing" type="MeshInstance3D" parent="CarPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+mesh = SubResource("Mesh_GridRing")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="PanelContainer" parent="UI"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 36.0
+offset_top = 36.0
+offset_right = 450.0
+offset_bottom = -36.0
+grow_vertical = 2
+theme_override_styles/panel = SubResource("Style_Panel")
+
+[node name="Margin" type="MarginContainer" parent="UI/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="VBox" type="VBoxContainer" parent="UI/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="Title" type="Label" parent="UI/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.5, 0.1, 1)
+theme_override_font_sizes/font_size = 32
+text = "🏁  RACE SETUP"
+
+[node name="Subtitle" type="Label" parent="UI/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.78, 0.9, 1)
+theme_override_font_sizes/font_size = 12
+text = "Configure AI Opponents & Review Race Conditions"
+
+[node name="Divider" type="ColorRect" parent="UI/Panel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+color = Color(0.98, 0.44, 0.05, 0.8)
+
+[node name="CarInfoLabel" type="Label" parent="UI/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "SELECTED CAR: ORANGE MUSCLE COUPE"
+
+[node name="DiffContainer" type="VBoxContainer" parent="UI/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="DiffTitle" type="Label" parent="UI/Panel/Margin/VBox/DiffContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.94, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "AI OPPONENT DIFFICULTY"
+
+[node name="DiffGrid" type="HBoxContainer" parent="UI/Panel/Margin/VBox/DiffContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="BtnEasy" type="Button" parent="UI/Panel/Margin/VBox/DiffContainer/DiffGrid"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("Style_DiffBtn")
+theme_override_styles/hover = SubResource("Style_DiffBtnHover")
+text = "EASY"
+
+[node name="BtnMedium" type="Button" parent="UI/Panel/Margin/VBox/DiffContainer/DiffGrid"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("Style_DiffBtn")
+theme_override_styles/hover = SubResource("Style_DiffBtnHover")
+text = "✓ MEDIUM"
+
+[node name="BtnHard" type="Button" parent="UI/Panel/Margin/VBox/DiffContainer/DiffGrid"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("Style_DiffBtn")
+theme_override_styles/hover = SubResource("Style_DiffBtnHover")
+text = "HARD"
+
+[node name="DiffDescLabel" type="Label" parent="UI/Panel/Margin/VBox/DiffContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 11
+text = "AI Opponents: Balanced speed (~58 WPM) • Standard racing challenge"
+autowrap_mode = 2
+
+[node name="BriefingBox" type="PanelContainer" parent="UI/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_Briefing")
+
+[node name="Margin" type="MarginContainer" parent="UI/Panel/Margin/VBox/BriefingBox"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 10
+
+[node name="BriefingLabel" type="Label" parent="UI/Panel/Margin/VBox/BriefingBox/Margin"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.7, 0.8, 0.92, 1)
+theme_override_font_sizes/font_size = 11
+text = "• TRACK: 500m Grand Speedway
+• KEYSTROKE ACCELERATION: +5.5 KM/H
+• TYPO PENALTY: -5.0 KM/H
+• FINISH LINE: 1st across wins the cup!"
+
+[node name="Spacer" type="Control" parent="UI/Panel/Margin/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="ActionButtons" type="VBoxContainer" parent="UI/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="StartRaceButton" type="Button" parent="UI/Panel/Margin/VBox/ActionButtons"]
+custom_minimum_size = Vector2(0, 54)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("Style_StartBtn")
+theme_override_styles/hover = SubResource("Style_StartBtnHover")
+text = "🏁  START RACE"
+
+[node name="CustomizeButton" type="Button" parent="UI/Panel/Margin/VBox/ActionButtons"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("Style_SecondaryBtn")
+theme_override_styles/hover = SubResource("Style_SecondaryBtnHover")
+text = "🏎  CUSTOMIZE PAINT"
+
+[node name="BackButton" type="Button" parent="UI/Panel/Margin/VBox/ActionButtons"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.88, 0.95, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("Style_SecondaryBtn")
+theme_override_styles/hover = SubResource("Style_SecondaryBtnHover")
+text = "◀  BACK TO MENU"
