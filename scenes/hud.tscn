@@ -306,9 +306,19 @@ text = "TIME: 00.00s | TOP SPEED: 0 KM/H
 TYPING SPEED: 0 WPM | ACCURACY: 100%"
 horizontal_alignment = 1
 
-[node name="RestartButton" type="Button" parent="RootControl/ResultsModal/Margin/VBox"]
-custom_minimum_size = Vector2(220, 44)
+[node name="ButtonBox" type="HBoxContainer" parent="RootControl/ResultsModal/Margin/VBox"]
 layout_mode = 2
-size_flags_horizontal = 4
-theme_override_font_sizes/font_size = 18
-text = "RESTART RACE (ENTER)"
+alignment = 1
+theme_override_constants/separation = 16
+
+[node name="RestartButton" type="Button" parent="RootControl/ResultsModal/Margin/VBox/ButtonBox"]
+custom_minimum_size = Vector2(190, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "🔄 RESTART (ENTER)"
+
+[node name="MenuButton" type="Button" parent="RootControl/ResultsModal/Margin/VBox/ButtonBox"]
+custom_minimum_size = Vector2(190, 44)
+layout_mode = 2
+theme_override_font_sizes/font_size = 15
+text = "🏠 MAIN MENU (ESC)"

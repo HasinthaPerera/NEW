@@ -36,6 +36,30 @@ func _ready() -> void:
 		if starting_grid_positions.has(c):
 			c.global_position = starting_grid_positions[c]
 
+	# Apply customizations from GameManager if available
+	if is_instance_valid(GameManager):
+		car.car_color = GameManager.player_car_color
+		var p_vis = car.get_car_visuals()
+		if p_vis:
+			p_vis.set_paint_color(GameManager.player_car_color)
+
+		var ai_configs: Array[Dictionary] = GameManager.get_ai_colors()
+		var ai_cars_list: Array[CharacterBody3D] = [ai_car_1, ai_car_2, ai_car_3]
+		for i in range(3):
+			var ai: CharacterBody3D = ai_cars_list[i]
+			var cfg: Dictionary = ai_configs[i]
+			ai.car_name = cfg["name"]
+			ai.car_color = cfg["color"]
+			var ai_vis = ai.get_car_visuals()
+			if ai_vis:
+				ai_vis.set_paint_color(cfg["color"])
+
+		current_difficulty = GameManager.ai_difficulty
+		for c in all_cars:
+			if c != car and c.has_method("apply_difficulty"):
+				c.apply_difficulty(current_difficulty)
+		hud.set_difficulty_display(current_difficulty)
+
 	# Connect TypingManager signals
 	typing_manager.correct_character_typed.connect(_on_correct_character)
 	typing_manager.incorrect_character_typed.connect(_on_incorrect_character)
@@ -45,6 +69,7 @@ func _ready() -> void:
 	# Connect HUD signals
 	hud.input_text_changed.connect(_on_hud_input_changed)
 	hud.restart_requested.connect(restart_race)
+	hud.menu_requested.connect(_on_hud_menu_requested)
 	hud.difficulty_changed.connect(_on_difficulty_changed)
 
 	# Connect Car signals
@@ -255,3 +280,6 @@ func _on_car_nitro_status_changed(is_active: bool, time_remaining: float) -> voi
 
 func restart_race() -> void:
 	_start_countdown_sequence()
+
+func _on_hud_menu_requested() -> void:
+	get_tree().change_scene_to_file.call_deferred("res://scenes/main_menu.tscn")
