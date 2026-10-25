@@ -165,8 +165,15 @@ transform = Transform3D(-0.707107, 0.353553, -0.612372, 0, 0.866025, 0.5, 0.7071
 light_color = Color(0.2, 0.6, 1, 1)
 light_energy = 1.3
 
+[node name="OverheadSpot" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.7, 4.5, 0)
+light_color = Color(1, 0.98, 0.95, 1)
+light_energy = 2.4
+spot_range = 9.0
+spot_angle = 50.0
+
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.956305, -0.0682424, 0.284347, 0, 0.97237, 0.233445, -0.292372, -0.223245, 0.929883, 2.0, 1.35, 4.0)
+transform = Transform3D(-0.819152, -0.100188, 0.564778, 0, 0.984603, 0.174808, -0.573576, 0.143194, -0.806539, 2.7, 1.25, -3.4)
 fov = 48.0
 
 [node name="ShowroomFloor" type="MeshInstance3D" parent="."]
@@ -276,7 +283,7 @@ text = "HARD"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
 theme_override_font_sizes/font_size = 11
-text = "AI Opponents: Balanced speed (~58 WPM) • Standard racing challenge"
+text = "Balanced AI opponents (~45 WPM, 93% accuracy).\nModerate acceleration and occasional typos. A fun, standard racing challenge."
 autowrap_mode = 2
 
 [node name="BriefingBox" type="PanelContainer" parent="UI/Panel/Margin/VBox"]

@@ -65,22 +65,25 @@ func _update_difficulty_ui() -> void:
 			btn.modulate = Color(0.85, 0.85, 0.85, 0.9)
 
 	if diff_desc_label:
-		match selected_difficulty:
-			"Easy":
-				diff_desc_label.text = "AI Opponents: Casual speed (~40 WPM) • Higher typo rate • Great for beginners"
-			"Hard":
-				diff_desc_label.text = "AI Opponents: Expert speed (~78 WPM) • Rare typos • Fast acceleration • Real challenge"
-			_:
-				diff_desc_label.text = "AI Opponents: Balanced speed (~58 WPM) • Standard racing challenge"
+		if is_instance_valid(GameManager) and GameManager.DIFFICULTY_CONFIG.has(selected_difficulty):
+			diff_desc_label.text = GameManager.DIFFICULTY_CONFIG[selected_difficulty]["description"]
+		else:
+			match selected_difficulty:
+				"Easy":
+					diff_desc_label.text = "Casual AI opponents (~25 WPM, 85% accuracy).\nSlower acceleration and frequent typing pauses. Great for beginners."
+				"Hard":
+					diff_desc_label.text = "Expert AI opponents (~65 WPM, 98% accuracy).\nFast acceleration and rare typos. Demands high typing speed and nitro combos!"
+				_:
+					diff_desc_label.text = "Balanced AI opponents (~45 WPM, 93% accuracy).\nModerate acceleration and occasional typos. A fun, standard racing challenge."
 
 func _on_start_race_pressed() -> void:
-	get_tree().change_scene_to_file("res://main.tscn")
+	get_tree().change_scene_to_file.call_deferred("res://main.tscn")
 
 func _on_customize_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/garage.tscn")
+	get_tree().change_scene_to_file.call_deferred("res://scenes/garage.tscn")
 
 func _on_back_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+	get_tree().change_scene_to_file.call_deferred("res://scenes/main_menu.tscn")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
