@@ -6,16 +6,16 @@ extends Node
 const SAVE_PATH := "user://settings.json"
 
 const COLOR_PRESETS: Dictionary = {
-	"Orange": Color(0.98, 0.44, 0.05, 1.0),
-	"Blue": Color(0.12, 0.48, 0.96, 1.0),
-	"Red": Color(0.92, 0.16, 0.16, 1.0),
-	"Green": Color(0.16, 0.82, 0.35, 1.0)
+	"Orange": Color("#FF791B"),
+	"Blue": Color("#1685E8"),
+	"Red": Color("#E63B43"),
+	"Green": Color("#30AD78")
 }
 
 const COLOR_NAMES: Array[String] = ["Orange", "Blue", "Red", "Green"]
 
 var selected_color_name: String = "Orange"
-var player_car_color: Color = Color(0.98, 0.44, 0.05, 1.0)
+var player_car_color: Color = Color("#FF791B")
 var ai_difficulty: String = "Medium"
 var music_volume: float = 0.8
 var sound_enabled: bool = true
@@ -30,7 +30,7 @@ func set_car_color_by_name(color_name: String) -> void:
 		save_settings()
 
 func get_color_for_name(color_name: String) -> Color:
-	return COLOR_PRESETS.get(color_name, Color(0.98, 0.44, 0.05, 1.0))
+	return COLOR_PRESETS.get(color_name, Color("#FF791B"))
 
 func set_difficulty(diff: String) -> void:
 	if diff in ["Easy", "Medium", "Hard"]:

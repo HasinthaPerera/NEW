@@ -43,17 +43,6 @@ func _ready() -> void:
 		if p_vis:
 			p_vis.set_paint_color(GameManager.player_car_color)
 
-		var ai_configs: Array[Dictionary] = GameManager.get_ai_colors()
-		var ai_cars_list: Array[CharacterBody3D] = [ai_car_1, ai_car_2, ai_car_3]
-		for i in range(3):
-			var ai: CharacterBody3D = ai_cars_list[i]
-			var cfg: Dictionary = ai_configs[i]
-			ai.car_name = cfg["name"]
-			ai.car_color = cfg["color"]
-			var ai_vis = ai.get_car_visuals()
-			if ai_vis:
-				ai_vis.set_paint_color(cfg["color"])
-
 		current_difficulty = GameManager.ai_difficulty
 		for c in all_cars:
 			if c != car and c.has_method("apply_difficulty"):
