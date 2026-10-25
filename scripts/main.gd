@@ -234,6 +234,8 @@ func _show_race_results() -> void:
 
 func _on_difficulty_changed(new_difficulty: String) -> void:
 	current_difficulty = new_difficulty
+	if is_instance_valid(GameManager):
+		GameManager.set_difficulty(new_difficulty)
 	for c in all_cars:
 		if c != car and c.has_method("apply_difficulty"):
 			c.apply_difficulty(new_difficulty)

@@ -17,11 +17,14 @@ var finish_time: float = 0.0
 var finish_rank: int = 0
 
 # AI Tuning Parameters
-var base_target_speed: float = 110.0
-var simulated_wpm: float = 58.0
-var error_chance: float = 0.06
-var accel_rate: float = 48.0
+var base_target_speed: float = 104.0
+var simulated_wpm: float = 45.0
+var error_chance: float = 0.07
+var accel_rate: float = 42.0
 var speed_variance: float = 0.0
+var min_error_pause: float = 0.30
+var max_error_pause: float = 0.50
+var nitro_boost_amount: float = 26.0
 
 # Keystroke simulation timers
 var keystroke_timer: float = 0.0
@@ -57,26 +60,42 @@ func _apply_car_material() -> void:
 		v.set_paint_color(car_color)
 
 func apply_difficulty(diff: String) -> void:
-	difficulty = diff
-	# Personality offset based on car hash/name so the 3 AI cars have slight natural speed differences
-	var personality_offset := float((car_name.hash() % 9) - 4)
+	if diff in ["Easy", "Medium", "Hard"]:
+		difficulty = diff
+	else:
+		difficulty = "Medium"
 
-	match diff:
-		"Easy":
-			base_target_speed = 88.0 + personality_offset
-			simulated_wpm = 40.0 + (personality_offset * 1.5)
-			error_chance = 0.10
-			accel_rate = 35.0
-		"Hard":
-			base_target_speed = 126.0 + personality_offset
-			simulated_wpm = 78.0 + (personality_offset * 1.5)
-			error_chance = 0.02
-			accel_rate = 60.0
-		_: # "Medium"
-			base_target_speed = 108.0 + personality_offset
-			simulated_wpm = 58.0 + (personality_offset * 1.5)
-			error_chance = 0.05
-			accel_rate = 48.0
+	# Personality offset based on car hash/name so the 3 AI cars have slight natural speed differences
+	var personality_offset := float((car_name.hash() % 7) - 3)
+
+	var config: Dictionary = {}
+	if is_instance_valid(GameManager) and GameManager.DIFFICULTY_CONFIG.has(difficulty):
+		config = GameManager.DIFFICULTY_CONFIG[difficulty]
+	else:
+		match difficulty:
+			"Easy":
+				config = {
+					"target_speed": 78.0, "wpm": 25.0, "error_chance": 0.15,
+					"accel_rate": 26.0, "min_error_pause": 0.45, "max_error_pause": 0.75, "nitro_boost": 20.0
+				}
+			"Hard":
+				config = {
+					"target_speed": 126.0, "wpm": 65.0, "error_chance": 0.02,
+					"accel_rate": 58.0, "min_error_pause": 0.18, "max_error_pause": 0.32, "nitro_boost": 32.0
+				}
+			_: # "Medium"
+				config = {
+					"target_speed": 104.0, "wpm": 45.0, "error_chance": 0.07,
+					"accel_rate": 42.0, "min_error_pause": 0.30, "max_error_pause": 0.50, "nitro_boost": 26.0
+				}
+
+	base_target_speed = config["target_speed"] + (personality_offset * 1.5)
+	simulated_wpm = config["wpm"] + (personality_offset * 0.8)
+	error_chance = config["error_chance"]
+	accel_rate = config["accel_rate"] + (personality_offset * 1.0)
+	min_error_pause = config["min_error_pause"]
+	max_error_pause = config["max_error_pause"]
+	nitro_boost_amount = config["nitro_boost"]
 
 func start_race() -> void:
 	is_race_started = true
@@ -132,7 +151,7 @@ func _process_ai_typing(delta: float) -> void:
 func _simulate_keystroke() -> void:
 	if randf() < error_chance:
 		# AI made a simulated typo
-		error_pause_timer = randf_range(0.3, 0.65)
+		error_pause_timer = randf_range(min_error_pause, max_error_pause)
 		target_speed_kmh = maxf(0.0, target_speed_kmh - 6.0)
 		return
 
@@ -152,7 +171,7 @@ func _activate_ai_nitro() -> void:
 	nitro_timer = 2.8
 	if car_visuals:
 		car_visuals.set_nitro_active(true)
-	target_speed_kmh = clampf(target_speed_kmh + 28.0, 40.0, base_target_speed + 35.0)
+	target_speed_kmh = clampf(target_speed_kmh + nitro_boost_amount, 40.0, base_target_speed + 35.0)
 
 func _process_nitro(delta: float) -> void:
 	if is_nitro_active:

@@ -14,6 +14,39 @@ const COLOR_PRESETS: Dictionary = {
 
 const COLOR_NAMES: Array[String] = ["Orange", "Blue", "Red", "Green"]
 
+const DIFFICULTY_CONFIG: Dictionary = {
+	"Easy": {
+		"target_speed": 78.0,
+		"wpm": 25.0,
+		"error_chance": 0.15,
+		"accel_rate": 26.0,
+		"min_error_pause": 0.45,
+		"max_error_pause": 0.75,
+		"nitro_boost": 20.0,
+		"description": "Casual AI opponents (~25 WPM, 85% accuracy).\nSlower acceleration and frequent typing pauses. Great for beginners."
+	},
+	"Medium": {
+		"target_speed": 104.0,
+		"wpm": 45.0,
+		"error_chance": 0.07,
+		"accel_rate": 42.0,
+		"min_error_pause": 0.30,
+		"max_error_pause": 0.50,
+		"nitro_boost": 26.0,
+		"description": "Balanced AI opponents (~45 WPM, 93% accuracy).\nModerate acceleration and occasional typos. A fun, standard racing challenge."
+	},
+	"Hard": {
+		"target_speed": 126.0,
+		"wpm": 65.0,
+		"error_chance": 0.02,
+		"accel_rate": 58.0,
+		"min_error_pause": 0.18,
+		"max_error_pause": 0.32,
+		"nitro_boost": 32.0,
+		"description": "Expert AI opponents (~65 WPM, 98% accuracy).\nFast acceleration and rare typos. Demands high typing speed and nitro combos!"
+	}
+}
+
 var selected_color_name: String = "Orange"
 var player_car_color: Color = Color("#FF791B")
 var ai_difficulty: String = "Medium"
