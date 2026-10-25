@@ -16,29 +16,29 @@ sky_material = SubResource("Sky_Garage")
 background_mode = 2
 sky = SubResource("Sky_Env")
 ambient_light_source = 2
-ambient_light_color = Color(0.22, 0.26, 0.35, 1)
-ambient_light_energy = 1.3
+ambient_light_color = Color(0.24, 0.28, 0.36, 1)
+ambient_light_energy = 1.25
 tonemap_mode = 2
-tonemap_exposure = 1.2
+tonemap_exposure = 1.15
 fog_enabled = true
-fog_light_color = Color(0.06, 0.08, 0.12, 1)
-fog_density = 0.007
+fog_light_color = Color(0.08, 0.1, 0.14, 1)
+fog_density = 0.006
 
 [sub_resource type="StandardMaterial3D" id="Mat_Floor"]
 albedo_color = Color(0.06, 0.07, 0.09, 1)
-metallic = 0.85
-roughness = 0.2
+metallic = 0.88
+roughness = 0.16
 
 [sub_resource type="CylinderMesh" id="Mesh_Floor"]
 material = SubResource("Mat_Floor")
-top_radius = 12.0
-bottom_radius = 12.0
+top_radius = 14.0
+bottom_radius = 14.0
 height = 0.2
 
 [sub_resource type="StandardMaterial3D" id="Mat_NeonRing"]
-albedo_color = Color(0.98, 0.44, 0.05, 1)
+albedo_color = Color(1, 0.47451, 0.105882, 1)
 emission_enabled = true
-emission = Color(0.98, 0.44, 0.05, 1)
+emission = Color(1, 0.47451, 0.105882, 1)
 emission_energy_multiplier = 3.5
 
 [sub_resource type="TorusMesh" id="Mesh_NeonRing"]
@@ -61,48 +61,48 @@ shadow_color = Color(0, 0, 0, 0.6)
 shadow_size = 20
 
 [sub_resource type="StyleBoxFlat" id="Style_ColorOrange"]
-bg_color = Color(0.98, 0.44, 0.05, 0.95)
+bg_color = Color(1, 0.47451, 0.105882, 0.95)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 0.75, 0.4, 1)
+border_color = Color(1, 0.8, 0.45, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="Style_ColorBlue"]
-bg_color = Color(0.12, 0.48, 0.96, 0.95)
+bg_color = Color(0.0862745, 0.521569, 0.909804, 0.95)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.5, 0.75, 1, 1)
+border_color = Color(0.45, 0.78, 1, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="Style_ColorRed"]
-bg_color = Color(0.92, 0.16, 0.16, 0.95)
+bg_color = Color(0.901961, 0.231373, 0.262745, 0.95)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 0.5, 0.5, 1)
+border_color = Color(1, 0.55, 0.55, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="Style_ColorGreen"]
-bg_color = Color(0.16, 0.82, 0.35, 0.95)
+bg_color = Color(0.188235, 0.678431, 0.470588, 0.95)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.6, 1, 0.7, 1)
+border_color = Color(0.55, 1, 0.75, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
@@ -121,21 +121,21 @@ corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
 
 [sub_resource type="StyleBoxFlat" id="Style_SelectBtn"]
-bg_color = Color(0.98, 0.44, 0.05, 0.95)
+bg_color = Color(1, 0.47451, 0.105882, 0.95)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(1, 0.75, 0.4, 1)
+border_color = Color(1, 0.8, 0.45, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-shadow_color = Color(0.98, 0.44, 0.05, 0.4)
+shadow_color = Color(1, 0.47451, 0.105882, 0.4)
 shadow_size = 10
 
 [sub_resource type="StyleBoxFlat" id="Style_SelectBtnHover"]
-bg_color = Color(1, 0.55, 0.15, 1)
+bg_color = Color(1, 0.55, 0.18, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -145,7 +145,7 @@ corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
-shadow_color = Color(1, 0.55, 0.15, 0.6)
+shadow_color = Color(1, 0.55, 0.18, 0.6)
 shadow_size = 14
 
 [sub_resource type="StyleBoxFlat" id="Style_BackBtn"]
@@ -193,24 +193,31 @@ environment = SubResource("Environment_Garage")
 [node name="KeyLight" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 3, 7, 5)
 light_color = Color(1, 0.97, 0.92, 1)
-light_energy = 1.75
+light_energy = 1.6
 shadow_enabled = true
 
 [node name="FillLight" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.707107, 0.353553, -0.612372, 0, 0.866025, 0.5, 0.707107, 0.353553, -0.612372, -4, 5, -4)
 light_color = Color(0.25, 0.65, 1, 1)
-light_energy = 1.3
+light_energy = 1.2
+
+[node name="OverheadSpot" type="SpotLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0.5, 4.5, 0)
+light_color = Color(1, 0.98, 0.95, 1)
+light_energy = 2.4
+spot_range = 9.0
+spot_angle = 50.0
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.939693, -0.0593912, 0.336824, 0, 0.984808, 0.173648, -0.34202, -0.163176, 0.925417, 2.2, 1.3, 3.8)
-fov = 50.0
+transform = Transform3D(-0.819152, -0.100188, 0.564778, 0, 0.984603, 0.174808, -0.573576, 0.143194, -0.806539, 2.7, 1.25, -3.4)
+fov = 48.0
 
 [node name="ShowroomFloor" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
 mesh = SubResource("Mesh_Floor")
 
 [node name="CarPivot" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 0, 0)
 
 [node name="SportsCarVisuals" parent="CarPivot" instance=ExtResource("2_car_visuals")]
 
@@ -241,11 +248,17 @@ theme_override_constants/margin_bottom = 26
 layout_mode = 2
 theme_override_constants/separation = 14
 
+[node name="HeaderBadge" type="Label" parent="UI/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "🏎 SHOWROOM & CUSTOMIZATION"
+
 [node name="Title" type="Label" parent="UI/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.5, 0.1, 1)
 theme_override_font_sizes/font_size = 30
-text = "🏎  3D CAR GARAGE"
+text = "3D CAR GARAGE"
 
 [node name="Subtitle" type="Label" parent="UI/Panel/Margin/VBox"]
 layout_mode = 2
@@ -256,13 +269,13 @@ text = "Stylized Modern Sports Coupe Paintwork"
 [node name="Divider" type="ColorRect" parent="UI/Panel/Margin/VBox"]
 custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
-color = Color(0.98, 0.44, 0.05, 0.8)
+color = Color(1, 0.47451, 0.105882, 0.8)
 
 [node name="CurrentColorLabel" type="Label" parent="UI/Panel/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.35, 0.8, 1, 1)
-theme_override_font_sizes/font_size = 16
-text = "PAINT: ORANGE"
+theme_override_font_sizes/font_size = 15
+text = "ACTIVE PAINT: ORANGE"
 
 [node name="ColorSelection" type="VBoxContainer" parent="UI/Panel/Margin/VBox"]
 layout_mode = 2
@@ -284,7 +297,7 @@ columns = 2
 custom_minimum_size = Vector2(165, 46)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 theme_override_styles/normal = SubResource("Style_ColorOrange")
 text = "ORANGE"
 
@@ -292,7 +305,7 @@ text = "ORANGE"
 custom_minimum_size = Vector2(165, 46)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 theme_override_styles/normal = SubResource("Style_ColorBlue")
 text = "BLUE"
 
@@ -300,7 +313,7 @@ text = "BLUE"
 custom_minimum_size = Vector2(165, 46)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 theme_override_styles/normal = SubResource("Style_ColorRed")
 text = "RED"
 
@@ -308,7 +321,7 @@ text = "RED"
 custom_minimum_size = Vector2(165, 46)
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 theme_override_styles/normal = SubResource("Style_ColorGreen")
 text = "GREEN"
 
@@ -356,7 +369,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 16
 theme_override_styles/normal = SubResource("Style_SelectBtn")
 theme_override_styles/hover = SubResource("Style_SelectBtnHover")
-text = "✓  CONFIRM & SELECT"
+text = "✓  SELECT CAR"
 
 [node name="BackButton" type="Button" parent="UI/Panel/Margin/VBox/ActionButtons"]
 custom_minimum_size = Vector2(0, 44)
@@ -365,7 +378,7 @@ theme_override_colors/font_color = Color(0.85, 0.9, 0.98, 1)
 theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("Style_BackBtn")
 theme_override_styles/hover = SubResource("Style_BackBtnHover")
-text = "◀  BACK TO MENU"
+text = "◀  BACK TO MAIN MENU"
 
 [node name="HintLabel" type="Label" parent="UI"]
 anchors_preset = 7
