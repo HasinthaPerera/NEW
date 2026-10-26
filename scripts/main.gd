@@ -256,7 +256,8 @@ func _show_race_results() -> void:
 		"completed_phrases": typing_manager.completed_phrases
 	}
 
-	hud.show_race_results(standings, player_stats)
+	var xp_info: Dictionary = GameManager.last_race_xp if is_instance_valid(GameManager) else {}
+	hud.show_race_results(standings, player_stats, xp_info)
 
 func _on_difficulty_changed(new_difficulty: String) -> void:
 	current_difficulty = new_difficulty
