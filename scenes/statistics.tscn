@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cstatisticsscene"]
+[gd_scene format=3 uid="uid://de3t05t8f8lcw"]
 
 [ext_resource type="Script" path="res://scripts/statistics.gd" id="1_stats_script"]
 
@@ -97,6 +97,52 @@ content_margin_top = 28.0
 content_margin_right = 24.0
 content_margin_bottom = 28.0
 
+[sub_resource type="StyleBoxFlat" id="Style_ProfileCard"]
+bg_color = Color(0.06, 0.09, 0.15, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.45, 0.75, 0.7)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 18.0
+content_margin_top = 14.0
+content_margin_right = 18.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxFlat" id="Style_LevelBadge"]
+bg_color = Color(0.12, 0.2, 0.32, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.98, 0.8, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="Style_XpBarBg"]
+bg_color = Color(0.04, 0.06, 0.1, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="Style_XpBarFill"]
+bg_color = Color(0.2, 0.75, 0.95, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
 [node name="Statistics" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -154,6 +200,78 @@ theme_override_constants/margin_bottom = 16
 [node name="ContentVBox" type="VBoxContainer" parent="MainLayout/ContentMargin"]
 layout_mode = 2
 theme_override_constants/separation = 16
+
+[node name="ProfileSectionLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.75, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "DRIVER PROFILE & LEVEL"
+
+[node name="ProfileCard" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_ProfileCard")
+
+[node name="ProfileHBox" type="HBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/ProfileCard"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="BadgeVBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/ProfileCard/ProfileHBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="LevelBadge" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/ProfileCard/ProfileHBox/BadgeVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_LevelBadge")
+
+[node name="PlayerLevelVal" type="Label" parent="MainLayout/ContentMargin/ContentVBox/ProfileCard/ProfileHBox/BadgeVBox/LevelBadge"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.82, 0.2, 1)
+theme_override_font_sizes/font_size = 18
+text = "LEVEL 1"
+horizontal_alignment = 1
+
+[node name="PlayerTitleVal" type="Label" parent="MainLayout/ContentMargin/ContentVBox/ProfileCard/ProfileHBox/BadgeVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "ROOKIE RACER"
+horizontal_alignment = 1
+
+[node name="ProgressVBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/ProfileCard/ProfileHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="ProgressInfoHBox" type="HBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/ProfileCard/ProfileHBox/ProgressVBox"]
+layout_mode = 2
+
+[node name="TotalXpVal" type="Label" parent="MainLayout/ContentMargin/ContentVBox/ProfileCard/ProfileHBox/ProgressVBox/ProgressInfoHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "0 TOTAL XP"
+
+[node name="XpNeededVal" type="Label" parent="MainLayout/ContentMargin/ContentVBox/ProfileCard/ProfileHBox/ProgressVBox/ProgressInfoHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 13
+text = "0 / 100 XP (100 XP to Level 2)"
+horizontal_alignment = 2
+
+[node name="XpProgressBar" type="ProgressBar" parent="MainLayout/ContentMargin/ContentVBox/ProfileCard/ProfileHBox/ProgressVBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+theme_override_styles/background = SubResource("Style_XpBarBg")
+theme_override_styles/fill = SubResource("Style_XpBarFill")
+max_value = 100.0
+show_percentage = false
 
 [node name="StatsSectionLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox"]
 layout_mode = 2

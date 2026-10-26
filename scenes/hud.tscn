@@ -61,6 +61,38 @@ content_margin_top = 24.0
 content_margin_right = 32.0
 content_margin_bottom = 24.0
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xp"]
+bg_color = Color(0.07, 0.1, 0.18, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.45, 0.8, 0.75)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_levelup"]
+bg_color = Color(0.2, 0.15, 0.04, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.98, 0.8, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource("1_hud_script")
 
@@ -264,17 +296,17 @@ caret_blink = true
 
 [node name="ResultsModal" type="PanelContainer" parent="RootControl"]
 visible = false
-custom_minimum_size = Vector2(560, 320)
+custom_minimum_size = Vector2(620, 440)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -280.0
-offset_top = -160.0
-offset_right = 280.0
-offset_bottom = 160.0
+offset_left = -310.0
+offset_top = -220.0
+offset_right = 310.0
+offset_bottom = 220.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_win")
@@ -284,7 +316,7 @@ layout_mode = 2
 
 [node name="VBox" type="VBoxContainer" parent="RootControl/ResultsModal/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 14
 alignment = 1
 
 [node name="ResultsTitle" type="Label" parent="RootControl/ResultsModal/Margin/VBox"]
@@ -304,6 +336,57 @@ theme_override_colors/font_color = Color(0.88, 0.92, 0.96, 1)
 theme_override_font_sizes/font_size = 15
 text = "TIME: 00.00s | TOP SPEED: 0 KM/H
 TYPING SPEED: 0 WPM | ACCURACY: 100%"
+horizontal_alignment = 1
+
+[node name="LevelUpBanner" type="PanelContainer" parent="RootControl/ResultsModal/Margin/VBox"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_levelup")
+
+[node name="LevelUpLabel" type="Label" parent="RootControl/ResultsModal/Margin/VBox/LevelUpBanner"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.35, 1)
+theme_override_font_sizes/font_size = 14
+text = "🎉 LEVEL UP! You reached Level 2 — Rookie Racer! 🎉"
+horizontal_alignment = 1
+
+[node name="XpRewardsBox" type="PanelContainer" parent="RootControl/ResultsModal/Margin/VBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_xp")
+
+[node name="VBox" type="VBoxContainer" parent="RootControl/ResultsModal/Margin/VBox/XpRewardsBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="HeaderHBox" type="HBoxContainer" parent="RootControl/ResultsModal/Margin/VBox/XpRewardsBox/VBox"]
+layout_mode = 2
+
+[node name="XpTitle" type="Label" parent="RootControl/ResultsModal/Margin/VBox/XpRewardsBox/VBox/HeaderHBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.75, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "XP REWARDS & PROGRESSION"
+
+[node name="TotalXpEarnedLabel" type="Label" parent="RootControl/ResultsModal/Margin/VBox/XpRewardsBox/VBox/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.98, 0.82, 0.2, 1)
+theme_override_font_sizes/font_size = 14
+text = "+350 XP EARNED"
+horizontal_alignment = 2
+
+[node name="XpBreakdownLabel" type="Label" parent="RootControl/ResultsModal/Margin/VBox/XpRewardsBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.96, 1)
+theme_override_font_sizes/font_size = 12
+text = "Finish: +100 XP  •  Position: +150 XP  •  Accuracy: +50 XP  •  Difficulty: +50 XP"
+horizontal_alignment = 1
+
+[node name="PlayerLevelLabel" type="Label" parent="RootControl/ResultsModal/Margin/VBox/XpRewardsBox/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.7, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "CURRENT RANK: Level 2 — Rookie Racer  (150 / 200 XP to Level 3)"
 horizontal_alignment = 1
 
 [node name="ButtonBox" type="HBoxContainer" parent="RootControl/ResultsModal/Margin/VBox"]

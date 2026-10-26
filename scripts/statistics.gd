@@ -1,5 +1,11 @@
 extends Control
 
+@onready var player_level_val: Label = %PlayerLevelVal
+@onready var player_title_val: Label = %PlayerTitleVal
+@onready var total_xp_val: Label = %TotalXpVal
+@onready var xp_needed_val: Label = %XpNeededVal
+@onready var xp_progress_bar: ProgressBar = %XpProgressBar
+
 @onready var races_played_val: Label = %RacesPlayedVal
 @onready var race_wins_val: Label = %RaceWinsVal
 @onready var win_rate_val: Label = %WinRateVal
@@ -28,6 +34,27 @@ func _populate_stats() -> void:
 	var avg_acc: float = stats.get("average_accuracy", 0.0)
 	var best_time: float = stats.get("best_race_time", 0.0)
 
+	# Player Level & Progression
+	var lvl: int = stats.get("level", 1)
+	var title: String = stats.get("title", "Rookie Racer")
+	var total_xp: int = stats.get("total_xp", 0)
+	var cur_xp: int = stats.get("current_level_xp", 0)
+	var next_cost: int = stats.get("next_level_cost", 100)
+	var xp_needed: int = stats.get("xp_needed", 100)
+
+	if player_level_val:
+		player_level_val.text = "LEVEL %d" % lvl
+	if player_title_val:
+		player_title_val.text = title.to_upper()
+	if total_xp_val:
+		total_xp_val.text = "%d TOTAL XP" % total_xp
+	if xp_needed_val:
+		xp_needed_val.text = "%d / %d XP  (%d XP to Level %d)" % [cur_xp, next_cost, xp_needed, lvl + 1]
+	if xp_progress_bar:
+		xp_progress_bar.max_value = next_cost
+		xp_progress_bar.value = cur_xp
+
+	# Career Stats
 	races_played_val.text = str(played)
 	race_wins_val.text = str(wins)
 	win_rate_val.text = "%.1f%%" % win_rate

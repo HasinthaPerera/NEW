@@ -64,6 +64,18 @@ var stats_total_incorrect_keystrokes: int = 0
 var stats_total_completed_phrases: int = 0
 var recent_races: Array[Dictionary] = []
 
+# Player Level & Experience Points (XP)
+const XP_COMPLETION: int = 100
+const XP_POSITION: Dictionary = {
+	1: 150,
+	2: 100,
+	3: 50,
+	4: 0
+}
+
+var total_xp: int = 0
+var last_race_xp: Dictionary = {}
+
 func _ready() -> void:
 	load_settings()
 	load_stats()
@@ -161,6 +173,65 @@ func load_settings() -> void:
 	if d.has("sound_enabled") and d["sound_enabled"] is bool:
 		sound_enabled = bool(d["sound_enabled"])
 
+func calculate_race_xp(pos: int, acc: float, diff: String) -> Dictionary:
+	var completion_xp := XP_COMPLETION
+	var pos_xp: int = XP_POSITION.get(pos, 0)
+	var acc_xp := 0
+	if acc >= 100.0 or is_equal_approx(acc, 100.0):
+		acc_xp = 100
+	elif acc >= 95.0:
+		acc_xp = 50
+	elif acc >= 90.0:
+		acc_xp = 25
+	else:
+		acc_xp = 0
+
+	var diff_xp := 50 if diff == "Hard" else 0
+	var total := completion_xp + pos_xp + acc_xp + diff_xp
+
+	return {
+		"completion_xp": completion_xp,
+		"position_xp": pos_xp,
+		"accuracy_xp": acc_xp,
+		"difficulty_xp": diff_xp,
+		"total_xp": total
+	}
+
+func get_player_title(lvl: int) -> String:
+	if lvl >= 20:
+		return "Racing Legend"
+	elif lvl >= 10:
+		return "Pro Racer"
+	elif lvl >= 5:
+		return "Street Racer"
+	else:
+		return "Rookie Racer"
+
+func get_level_info(xp: int) -> Dictionary:
+	var remaining: int = maxi(0, xp)
+	var current_lvl: int = 1
+	while true:
+		var cost_for_next: int = 100 * current_lvl
+		if remaining >= cost_for_next:
+			remaining -= cost_for_next
+			current_lvl += 1
+		else:
+			break
+
+	var cost_for_next: int = 100 * current_lvl
+	var progress_ratio: float = float(remaining) / float(cost_for_next)
+	var title: String = get_player_title(current_lvl)
+
+	return {
+		"level": current_lvl,
+		"current_level_xp": remaining,
+		"next_level_cost": cost_for_next,
+		"xp_needed": cost_for_next - remaining,
+		"progress_ratio": clampf(progress_ratio, 0.0, 1.0),
+		"title": title,
+		"total_xp": maxi(0, xp)
+	}
+
 func get_career_stats() -> Dictionary:
 	var total_keys := stats_total_correct_keystrokes + stats_total_incorrect_keystrokes
 	var avg_acc: float = 0.0
@@ -169,6 +240,8 @@ func get_career_stats() -> Dictionary:
 	var win_rate: float = 0.0
 	if stats_races_played > 0:
 		win_rate = (float(stats_race_wins) / float(stats_races_played)) * 100.0
+
+	var lvl_info := get_level_info(total_xp)
 
 	return {
 		"races_played": stats_races_played,
@@ -179,13 +252,20 @@ func get_career_stats() -> Dictionary:
 		"best_race_time": stats_best_race_time,
 		"total_correct_keystrokes": stats_total_correct_keystrokes,
 		"total_incorrect_keystrokes": stats_total_incorrect_keystrokes,
-		"total_completed_phrases": stats_total_completed_phrases
+		"total_completed_phrases": stats_total_completed_phrases,
+		"total_xp": total_xp,
+		"level": lvl_info["level"],
+		"title": lvl_info["title"],
+		"current_level_xp": lvl_info["current_level_xp"],
+		"next_level_cost": lvl_info["next_level_cost"],
+		"xp_needed": lvl_info["xp_needed"],
+		"progress_ratio": lvl_info["progress_ratio"]
 	}
 
 func get_recent_races() -> Array[Dictionary]:
 	return recent_races.duplicate()
 
-func record_race_result(result: Dictionary) -> void:
+func record_race_result(result: Dictionary) -> Dictionary:
 	var date_str: String = result.get("date", "")
 	if date_str.is_empty():
 		var dt := Time.get_datetime_dict_from_system()
@@ -201,6 +281,33 @@ func record_race_result(result: Dictionary) -> void:
 	var phrases: int = int(result.get("completed_phrases", 0))
 	var c_color: String = result.get("car_color", selected_color_name)
 
+	# Calculate XP and Leveling
+	var prev_lvl_info: Dictionary = get_level_info(total_xp)
+	var xp_breakdown: Dictionary = calculate_race_xp(pos, acc_val, diff)
+	var earned_xp: int = int(xp_breakdown["total_xp"])
+	total_xp += earned_xp
+	var new_lvl_info: Dictionary = get_level_info(total_xp)
+	var leveled_up: bool = (int(new_lvl_info["level"]) > int(prev_lvl_info["level"]))
+	var levels_gained: int = int(new_lvl_info["level"]) - int(prev_lvl_info["level"])
+
+	last_race_xp = {
+		"completion_xp": xp_breakdown["completion_xp"],
+		"position_xp": xp_breakdown["position_xp"],
+		"accuracy_xp": xp_breakdown["accuracy_xp"],
+		"difficulty_xp": xp_breakdown["difficulty_xp"],
+		"total_xp_earned": earned_xp,
+		"prev_level": prev_lvl_info["level"],
+		"current_level": new_lvl_info["level"],
+		"leveled_up": leveled_up,
+		"levels_gained": levels_gained,
+		"title": new_lvl_info["title"],
+		"total_xp": total_xp,
+		"current_level_xp": new_lvl_info["current_level_xp"],
+		"next_level_cost": new_lvl_info["next_level_cost"],
+		"xp_needed": new_lvl_info["xp_needed"],
+		"progress_ratio": new_lvl_info["progress_ratio"]
+	}
+
 	var entry: Dictionary = {
 		"date": date_str,
 		"timestamp": int(Time.get_unix_time_from_system()),
@@ -212,7 +319,8 @@ func record_race_result(result: Dictionary) -> void:
 		"correct_keystrokes": corr,
 		"incorrect_keystrokes": errs,
 		"completed_phrases": phrases,
-		"car_color": c_color
+		"car_color": c_color,
+		"xp_earned": earned_xp
 	}
 
 	# Update Career Cumulative Stats
@@ -237,12 +345,15 @@ func record_race_result(result: Dictionary) -> void:
 		recent_races.resize(20)
 
 	save_stats()
+	return last_race_xp
 
 func save_stats() -> void:
 	var total_keys := stats_total_correct_keystrokes + stats_total_incorrect_keystrokes
 	var avg_acc: float = 0.0
 	if total_keys > 0:
 		avg_acc = (float(stats_total_correct_keystrokes) / float(total_keys)) * 100.0
+
+	var lvl_info := get_level_info(total_xp)
 
 	var data: Dictionary = {
 		"version": 1,
@@ -258,8 +369,9 @@ func save_stats() -> void:
 		},
 		"history": recent_races,
 		"progression": {
-			"xp": 0,
-			"level": 1
+			"total_xp": total_xp,
+			"level": lvl_info["level"],
+			"title": lvl_info["title"]
 		},
 		"achievements": {}
 	}
@@ -271,25 +383,40 @@ func save_stats() -> void:
 
 func load_stats() -> void:
 	if not FileAccess.file_exists(STATS_PATH):
+		total_xp = 0
 		return # Use defaults safely
 
 	var file := FileAccess.open(STATS_PATH, FileAccess.READ)
 	if not file:
+		total_xp = 0
 		return
 
 	var text := file.get_as_text()
 	file.close()
 
 	if text.strip_edges().is_empty():
+		total_xp = 0
 		return
 
 	var json := JSON.new()
 	var err := json.parse(text)
 	if err != OK or not (json.data is Dictionary):
 		push_warning("Failed to parse stats.json or format is invalid. Using default statistics.")
+		total_xp = 0
 		return
 
 	var d: Dictionary = json.data
+
+	if d.has("progression") and d["progression"] is Dictionary:
+		var p: Dictionary = d["progression"]
+		if p.has("total_xp") and (p["total_xp"] is int or p["total_xp"] is float):
+			total_xp = maxi(0, int(p["total_xp"]))
+		elif p.has("xp") and (p["xp"] is int or p["xp"] is float):
+			total_xp = maxi(0, int(p["xp"]))
+		else:
+			total_xp = 0
+	else:
+		total_xp = 0
 
 	if d.has("career") and d["career"] is Dictionary:
 		var c: Dictionary = d["career"]
@@ -324,7 +451,8 @@ func load_stats() -> void:
 				"correct_keystrokes": int(item.get("correct_keystrokes", 0)),
 				"incorrect_keystrokes": int(item.get("incorrect_keystrokes", 0)),
 				"completed_phrases": int(item.get("completed_phrases", 0)),
-				"car_color": str(item.get("car_color", "Orange"))
+				"car_color": str(item.get("car_color", "Orange")),
+				"xp_earned": int(item.get("xp_earned", 0))
 			}
 			recent_races.append(valid_entry)
 			if recent_races.size() >= 20:
@@ -338,5 +466,7 @@ func clear_stats() -> void:
 	stats_total_correct_keystrokes = 0
 	stats_total_incorrect_keystrokes = 0
 	stats_total_completed_phrases = 0
+	total_xp = 0
+	last_race_xp.clear()
 	recent_races.clear()
 	save_stats()

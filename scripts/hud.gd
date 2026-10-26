@@ -27,6 +27,12 @@ signal difficulty_changed(new_difficulty: String)
 @onready var results_title: Label = $RootControl/ResultsModal/Margin/VBox/ResultsTitle
 @onready var standings_container: VBoxContainer = $RootControl/ResultsModal/Margin/VBox/StandingsContainer
 @onready var player_stats_label: Label = $RootControl/ResultsModal/Margin/VBox/PlayerStatsLabel
+@onready var level_up_banner: PanelContainer = $RootControl/ResultsModal/Margin/VBox/LevelUpBanner
+@onready var level_up_label: Label = $RootControl/ResultsModal/Margin/VBox/LevelUpBanner/LevelUpLabel
+@onready var xp_rewards_box: PanelContainer = $RootControl/ResultsModal/Margin/VBox/XpRewardsBox
+@onready var total_xp_earned_label: Label = $RootControl/ResultsModal/Margin/VBox/XpRewardsBox/VBox/HeaderHBox/TotalXpEarnedLabel
+@onready var xp_breakdown_label: Label = $RootControl/ResultsModal/Margin/VBox/XpRewardsBox/VBox/XpBreakdownLabel
+@onready var player_level_label: Label = $RootControl/ResultsModal/Margin/VBox/XpRewardsBox/VBox/PlayerLevelLabel
 @onready var restart_button: Button = $RootControl/ResultsModal/Margin/VBox/ButtonBox/RestartButton
 @onready var menu_button: Button = $RootControl/ResultsModal/Margin/VBox/ButtonBox/MenuButton
 
@@ -198,7 +204,7 @@ func set_nitro_active(active: bool, time_left: float) -> void:
 	if active:
 		nitro_timer_label.text = "NITRO BOOST: %.1fs" % time_left
 
-func show_race_results(standings: Array, player_stats: Dictionary) -> void:
+func show_race_results(standings: Array, player_stats: Dictionary, xp_info: Dictionary = {}) -> void:
 	is_race_ended = true
 	input_line.editable = false
 	results_modal.visible = true
@@ -270,11 +276,67 @@ func show_race_results(standings: Array, player_stats: Dictionary) -> void:
 		rank_str, time_val, int(round(wpm_val)), acc_val
 	]
 
+	# XP Rewards Breakdown & Leveling
+	if xp_info.is_empty() and is_instance_valid(GameManager):
+		xp_info = GameManager.last_race_xp
+
+	if xp_rewards_box:
+		if xp_info.is_empty():
+			xp_rewards_box.visible = false
+			if level_up_banner:
+				level_up_banner.visible = false
+		else:
+			xp_rewards_box.visible = true
+			var comp_xp: int = xp_info.get("completion_xp", 100)
+			var pos_xp: int = xp_info.get("position_xp", 0)
+			var acc_xp: int = xp_info.get("accuracy_xp", 0)
+			var diff_xp: int = xp_info.get("difficulty_xp", 0)
+			var total_earned: int = xp_info.get("total_xp_earned", 0)
+			var cur_lvl: int = xp_info.get("current_level", 1)
+			var title_str: String = xp_info.get("title", "Rookie Racer")
+			var leveled_up: bool = xp_info.get("leveled_up", false)
+			var levels_gained: int = xp_info.get("levels_gained", 0)
+			var prev_lvl: int = xp_info.get("prev_level", 1)
+
+			if total_xp_earned_label:
+				total_xp_earned_label.text = "+%d XP EARNED" % total_earned
+
+			if xp_breakdown_label:
+				xp_breakdown_label.text = "Finish: +%d XP  •  Position: +%d XP  •  Accuracy: +%d XP  •  Difficulty: +%d XP" % [
+					comp_xp, pos_xp, acc_xp, diff_xp
+				]
+
+			if player_level_label:
+				var cur_xp: int = xp_info.get("current_level_xp", 0)
+				var next_cost: int = xp_info.get("next_level_cost", 100)
+				var xp_needed: int = xp_info.get("xp_needed", 100)
+				player_level_label.text = "CURRENT RANK: Level %d — %s  (%d / %d XP, %d XP to Level %d)" % [
+					cur_lvl, title_str, cur_xp, next_cost, xp_needed, cur_lvl + 1
+				]
+
+			if level_up_banner and level_up_label:
+				if leveled_up:
+					level_up_banner.visible = true
+					if levels_gained > 1:
+						level_up_label.text = "🎉 MULTI-LEVEL UP! Level %d ➔ Level %d — %s! 🎉" % [
+							prev_lvl, cur_lvl, title_str
+						]
+					else:
+						level_up_label.text = "🎉 LEVEL UP! You reached Level %d — %s! 🎉" % [
+							cur_lvl, title_str
+						]
+				else:
+					level_up_banner.visible = false
+
 	restart_button.grab_focus()
 
 func reset_hud() -> void:
 	is_race_ended = false
 	results_modal.visible = false
+	if level_up_banner:
+		level_up_banner.visible = false
+	if xp_rewards_box:
+		xp_rewards_box.visible = false
 	nitro_badge.visible = false
 	input_line.editable = true
 	input_line.text = ""
