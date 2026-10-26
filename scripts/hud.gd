@@ -254,13 +254,20 @@ func show_race_results(standings: Array, player_stats: Dictionary) -> void:
 		standings_container.add_child(row)
 
 	# Player Typing Summary
+	var rank_val: int = player_stats.get("rank", 1)
 	var time_val: float = player_stats.get("time", 0.0)
 	var speed_val: float = player_stats.get("top_speed", 0.0)
 	var wpm_val: float = player_stats.get("wpm", 0.0)
 	var acc_val: float = player_stats.get("accuracy", 100.0)
 
-	player_stats_label.text = "YOUR STATS | TIME: %.2fs | TOP SPEED: %d KM/H\nTYPING SPEED: %d WPM | ACCURACY: %.1f%%" % [
-		time_val, int(speed_val), int(wpm_val), acc_val
+	var rank_str := "4th Place"
+	match rank_val:
+		1: rank_str = "1st Place 🏆"
+		2: rank_str = "2nd Place 🥈"
+		3: rank_str = "3rd Place 🥉"
+
+	player_stats_label.text = "FINAL POSITION: %s   |   RACE TIME: %.2fs\nTYPING SPEED: %d WPM   |   ACCURACY: %.1f%%" % [
+		rank_str, time_val, int(round(wpm_val)), acc_val
 	]
 
 	restart_button.grab_focus()

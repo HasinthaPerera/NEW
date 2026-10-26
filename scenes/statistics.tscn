@@ -1,0 +1,420 @@
+[gd_scene load_steps=10 format=3 uid="uid://cstatisticsscene"]
+
+[ext_resource type="Script" path="res://scripts/statistics.gd" id="1_stats_script"]
+
+[sub_resource type="StyleBoxFlat" id="Style_Bg"]
+bg_color = Color(0.04, 0.06, 0.09, 1)
+
+[sub_resource type="StyleBoxFlat" id="Style_HeaderPanel"]
+bg_color = Color(0.08, 0.12, 0.18, 0.95)
+border_width_bottom = 2
+border_color = Color(0.14, 0.55, 0.92, 0.8)
+content_margin_left = 24.0
+content_margin_top = 16.0
+content_margin_right = 24.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="Style_StatCard"]
+bg_color = Color(0.07, 0.1, 0.16, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.18, 0.28, 0.42, 0.7)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 16.0
+content_margin_top = 14.0
+content_margin_right = 16.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxFlat" id="Style_ListContainer"]
+bg_color = Color(0.05, 0.07, 0.11, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.16, 0.24, 0.36, 0.7)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 12.0
+content_margin_top = 10.0
+content_margin_right = 12.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="Style_TableHeader"]
+bg_color = Color(0.1, 0.14, 0.22, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 14.0
+content_margin_top = 8.0
+content_margin_right = 14.0
+content_margin_bottom = 8.0
+
+[sub_resource type="StyleBoxFlat" id="Style_BackBtn"]
+bg_color = Color(0.12, 0.16, 0.24, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.35, 0.5, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_BackBtnHover"]
+bg_color = Color(0.18, 0.24, 0.36, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.75, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_EmptyBox"]
+bg_color = Color(0.06, 0.08, 0.12, 0.7)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.15, 0.2, 0.3, 0.6)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+content_margin_left = 24.0
+content_margin_top = 28.0
+content_margin_right = 24.0
+content_margin_bottom = 28.0
+
+[node name="Statistics" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_stats_script")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("Style_Bg")
+
+[node name="MainLayout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HeaderPanel" type="PanelContainer" parent="MainLayout"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_HeaderPanel")
+
+[node name="HeaderVBox" type="VBoxContainer" parent="MainLayout/HeaderPanel"]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="Title" type="Label" parent="MainLayout/HeaderPanel/HeaderVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 24
+text = "📊  CAREER STATISTICS"
+
+[node name="Subtitle" type="Label" parent="MainLayout/HeaderPanel/HeaderVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.68, 0.85, 1)
+theme_override_font_sizes/font_size = 12
+text = "Track your typing speed, racing performance, and victory records"
+
+[node name="ContentMargin" type="MarginContainer" parent="MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 16
+
+[node name="ContentVBox" type="VBoxContainer" parent="MainLayout/ContentMargin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="StatsSectionLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.75, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "PLAYER STATISTICS"
+
+[node name="StatsGrid" type="GridContainer" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+theme_override_constants/h_separation = 14
+theme_override_constants/v_separation = 12
+columns = 3
+
+[node name="RacesPlayedCard" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Style_StatCard")
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/RacesPlayedCard"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/RacesPlayedCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 11
+text = "RACES PLAYED"
+
+[node name="RacesPlayedVal" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/RacesPlayedCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "0"
+
+[node name="RaceWinsCard" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Style_StatCard")
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/RaceWinsCard"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/RaceWinsCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 11
+text = "RACE WINS"
+
+[node name="RaceWinsVal" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/RaceWinsCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.98, 0.8, 0.2, 1)
+theme_override_font_sizes/font_size = 22
+text = "0"
+
+[node name="WinRateCard" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Style_StatCard")
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/WinRateCard"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/WinRateCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 11
+text = "WIN RATE"
+
+[node name="WinRateVal" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/WinRateCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.85, 0.5, 1)
+theme_override_font_sizes/font_size = 22
+text = "0.0%"
+
+[node name="BestWpmCard" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Style_StatCard")
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/BestWpmCard"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/BestWpmCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 11
+text = "BEST WPM"
+
+[node name="BestWpmVal" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/BestWpmCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.25, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 22
+text = "--"
+
+[node name="AvgAccCard" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Style_StatCard")
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/AvgAccCard"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/AvgAccCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 11
+text = "AVERAGE ACCURACY"
+
+[node name="AvgAccVal" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/AvgAccCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.9, 0.5, 1)
+theme_override_font_sizes/font_size = 22
+text = "--"
+
+[node name="BestTimeCard" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Style_StatCard")
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/BestTimeCard"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/BestTimeCard/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 11
+text = "BEST RACE TIME"
+
+[node name="BestTimeVal" type="Label" parent="MainLayout/ContentMargin/ContentVBox/StatsGrid/BestTimeCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.4, 1)
+theme_override_font_sizes/font_size = 22
+text = "--"
+
+[node name="HistorySectionLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.75, 1, 1)
+theme_override_font_sizes/font_size = 14
+text = "RECENT RACES (LAST 20)"
+
+[node name="HistoryBox" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("Style_ListContainer")
+
+[node name="HistoryLayout" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox"]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="TableHeader" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_TableHeader")
+
+[node name="HeaderHBox" type="HBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/TableHeader"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="ThDate" type="Label" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/TableHeader/HeaderHBox"]
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.65, 0.78, 1)
+theme_override_font_sizes/font_size = 12
+text = "DATE"
+
+[node name="ThDiff" type="Label" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/TableHeader/HeaderHBox"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.65, 0.78, 1)
+theme_override_font_sizes/font_size = 12
+text = "DIFFICULTY"
+
+[node name="ThPos" type="Label" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/TableHeader/HeaderHBox"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.65, 0.78, 1)
+theme_override_font_sizes/font_size = 12
+text = "FINISHING POSITION"
+
+[node name="ThWpm" type="Label" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/TableHeader/HeaderHBox"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.65, 0.78, 1)
+theme_override_font_sizes/font_size = 12
+text = "WPM"
+
+[node name="ThAcc" type="Label" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/TableHeader/HeaderHBox"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.65, 0.78, 1)
+theme_override_font_sizes/font_size = 12
+text = "ACCURACY"
+
+[node name="ThTime" type="Label" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/TableHeader/HeaderHBox"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.55, 0.65, 0.78, 1)
+theme_override_font_sizes/font_size = 12
+text = "RACE TIME"
+horizontal_alignment = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="RecentRacesList" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="EmptyState" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("Style_EmptyBox")
+
+[node name="EmptyVBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/EmptyState"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="EmptyIcon" type="Label" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/EmptyState/EmptyVBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "🏎️"
+horizontal_alignment = 1
+
+[node name="EmptyTitle" type="Label" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/EmptyState/EmptyVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.95, 1)
+theme_override_font_sizes/font_size = 16
+text = "No completed races recorded yet"
+horizontal_alignment = 1
+
+[node name="EmptySub" type="Label" parent="MainLayout/ContentMargin/ContentVBox/HistoryBox/HistoryLayout/EmptyState/EmptyVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.5, 0.6, 0.72, 1)
+theme_override_font_sizes/font_size = 12
+text = "Hit the track from the Main Menu to set your first race times and typing records!"
+horizontal_alignment = 1
+
+[node name="FooterBar" type="HBoxContainer" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+alignment = 1
+
+[node name="BackButton" type="Button" parent="MainLayout/ContentMargin/ContentVBox/FooterBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("Style_BackBtn")
+theme_override_styles/hover = SubResource("Style_BackBtnHover")
+theme_override_styles/pressed = SubResource("Style_BackBtnHover")
+theme_override_styles/focus = SubResource("Style_BackBtnHover")
+text = "◀  BACK TO MAIN MENU"
