@@ -32,8 +32,12 @@ var last_input_text: String = ""
 var total_keystrokes: int = 0
 var correct_keystrokes: int = 0
 var error_keystrokes: int = 0
+var completed_phrases: int = 0
 var start_time_msec: int = 0
+var end_time_msec: int = 0
 var is_racing: bool = false
+var final_wpm: float = 0.0
+var final_accuracy: float = 100.0
 
 func _ready() -> void:
 	reset_sentences()
@@ -44,10 +48,21 @@ func reset_sentences() -> void:
 	total_keystrokes = 0
 	correct_keystrokes = 0
 	error_keystrokes = 0
+	completed_phrases = 0
 	start_time_msec = 0
+	end_time_msec = 0
 	is_racing = false
+	final_wpm = 0.0
+	final_accuracy = 100.0
 	last_input_text = ""
 	_load_next_sentence()
+
+func start_racing() -> void:
+	is_racing = true
+	start_time_msec = Time.get_ticks_msec()
+	end_time_msec = 0
+	final_wpm = 0.0
+	final_accuracy = 100.0
 
 func _load_next_sentence() -> void:
 	if sentence_pool.is_empty():
@@ -63,25 +78,31 @@ func _load_next_sentence() -> void:
 	sentence_updated.emit(current_target_sentence, "", false)
 
 func on_input_changed(new_text: String) -> bool:
+	if new_text == last_input_text:
+		return false
+
 	if not is_racing and new_text.length() > 0:
 		is_racing = true
-		start_time_msec = Time.get_ticks_msec()
+		if start_time_msec == 0:
+			start_time_msec = Time.get_ticks_msec()
 
 	var input_len := new_text.length()
-	var was_backspace := input_len < last_input_text.length()
+	var last_len := last_input_text.length()
+	var was_backspace := input_len < last_len
 
 	# Check if current input strictly matches the prefix of target sentence
 	var target_prefix := current_target_sentence.left(input_len)
 	var is_match := (new_text == target_prefix)
 
-	if not was_backspace and input_len > 0:
-		total_keystrokes += 1
+	if not was_backspace and input_len > last_len:
+		var chars_added := input_len - last_len
+		total_keystrokes += chars_added
 		if is_match:
-			correct_keystrokes += 1
+			correct_keystrokes += chars_added
 			var last_char := new_text.right(1)
 			correct_character_typed.emit(last_char)
 		else:
-			error_keystrokes += 1
+			error_keystrokes += chars_added
 			incorrect_character_typed.emit()
 
 	last_input_text = new_text
@@ -89,6 +110,7 @@ func on_input_changed(new_text: String) -> bool:
 
 	# Sentence completion check
 	if new_text == current_target_sentence:
+		completed_phrases += 1
 		sentence_completed.emit(current_target_sentence)
 		_load_next_sentence()
 		return true # Signal to clear the input field
@@ -101,25 +123,45 @@ func _emit_stats() -> void:
 	var accuracy := get_current_accuracy()
 	stats_updated.emit(wpm, accuracy)
 
-func get_current_wpm() -> float:
+func get_active_typing_time() -> float:
 	if start_time_msec == 0:
 		return 0.0
-	var elapsed_sec: float = float(Time.get_ticks_msec() - start_time_msec) / 1000.0
-	if elapsed_sec < 0.5:
-		return 0.0
-	var words: float = float(correct_keystrokes) / 5.0
-	var minutes: float = elapsed_sec / 60.0
-	return words / minutes
-
-func get_current_accuracy() -> float:
-	if total_keystrokes == 0:
-		return 100.0
-	return (float(correct_keystrokes) / float(total_keystrokes)) * 100.0
-
-func get_elapsed_seconds() -> float:
-	if start_time_msec == 0:
-		return 0.0
+	if end_time_msec > 0:
+		return float(end_time_msec - start_time_msec) / 1000.0
 	return float(Time.get_ticks_msec() - start_time_msec) / 1000.0
 
+func get_current_wpm() -> float:
+	var active_sec := get_active_typing_time()
+	if active_sec < 0.2 or correct_keystrokes == 0:
+		return 0.0
+	var active_minutes := active_sec / 60.0
+	if active_minutes <= 0.0001:
+		return 0.0
+	var words: float = float(correct_keystrokes) / 5.0
+	return words / active_minutes
+
+func get_current_accuracy() -> float:
+	var total_keys := correct_keystrokes + error_keystrokes
+	if total_keys == 0:
+		return 100.0
+	return (float(correct_keystrokes) / float(total_keys)) * 100.0
+
+func get_final_wpm() -> float:
+	if end_time_msec > 0:
+		return final_wpm
+	return get_current_wpm()
+
+func get_final_accuracy() -> float:
+	if end_time_msec > 0:
+		return final_accuracy
+	return get_current_accuracy()
+
+func get_elapsed_seconds() -> float:
+	return get_active_typing_time()
+
 func stop_racing() -> void:
-	is_racing = false
+	if is_racing:
+		is_racing = false
+		end_time_msec = Time.get_ticks_msec()
+		final_wpm = get_current_wpm()
+		final_accuracy = get_current_accuracy()

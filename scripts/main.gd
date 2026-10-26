@@ -21,6 +21,7 @@ var current_difficulty: String = "Medium"
 
 var finished_cars: Array[CharacterBody3D] = []
 var is_game_over: bool = false
+var race_recorded: bool = false
 
 func _ready() -> void:
 	all_cars = [car, ai_car_1, ai_car_2, ai_car_3]
@@ -76,6 +77,7 @@ func _start_countdown_sequence() -> void:
 	countdown_timer = 3.6
 	last_countdown_sec = -1
 	is_game_over = false
+	race_recorded = false
 	top_speed_achieved = 0.0
 	finished_cars.clear()
 
@@ -127,6 +129,7 @@ func _process_countdown(delta: float) -> void:
 
 func _launch_race() -> void:
 	race_start_msec = Time.get_ticks_msec()
+	typing_manager.start_racing()
 	for c in all_cars:
 		if c.has_method("start_race"):
 			c.start_race()
@@ -188,7 +191,27 @@ func _on_car_finished(car_node: CharacterBody3D) -> void:
 	if car_node == car and not is_game_over:
 		is_game_over = true
 		typing_manager.stop_racing()
+		_record_race_stats_authoritative()
 		_show_race_results()
+
+func _record_race_stats_authoritative() -> void:
+	if race_recorded:
+		return
+	race_recorded = true
+
+	if is_instance_valid(GameManager):
+		var result: Dictionary = {
+			"difficulty": current_difficulty,
+			"position": car.finish_rank if car.finish_rank > 0 else _calculate_player_live_rank(),
+			"race_time": car.finish_time,
+			"wpm": typing_manager.get_final_wpm(),
+			"accuracy": typing_manager.get_final_accuracy(),
+			"correct_keystrokes": typing_manager.correct_keystrokes,
+			"incorrect_keystrokes": typing_manager.error_keystrokes,
+			"completed_phrases": typing_manager.completed_phrases,
+			"car_color": GameManager.selected_color_name
+		}
+		GameManager.record_race_result(result)
 
 func _show_race_results() -> void:
 	var standings: Array[Dictionary] = []
@@ -226,8 +249,11 @@ func _show_race_results() -> void:
 		"rank": car.finish_rank if car.finish_rank > 0 else _calculate_player_live_rank(),
 		"time": car.finish_time,
 		"top_speed": top_speed_achieved,
-		"wpm": typing_manager.get_current_wpm(),
-		"accuracy": typing_manager.get_current_accuracy()
+		"wpm": typing_manager.get_final_wpm(),
+		"accuracy": typing_manager.get_final_accuracy(),
+		"correct_keystrokes": typing_manager.correct_keystrokes,
+		"incorrect_keystrokes": typing_manager.error_keystrokes,
+		"completed_phrases": typing_manager.completed_phrases
 	}
 
 	hud.show_race_results(standings, player_stats)
