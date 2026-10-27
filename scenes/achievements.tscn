@@ -1,0 +1,242 @@
+[gd_scene format=3 uid="uid://c8yhq9n3m2kvx"]
+
+[ext_resource type="Script" path="res://scripts/achievements.gd" id="1_achievements_script"]
+
+[sub_resource type="StyleBoxFlat" id="Style_Bg"]
+bg_color = Color(0.04, 0.06, 0.09, 1)
+
+[sub_resource type="StyleBoxFlat" id="Style_HeaderPanel"]
+bg_color = Color(0.08, 0.12, 0.18, 0.95)
+border_width_bottom = 2
+border_color = Color(1, 0.75, 0.15, 0.8)
+content_margin_left = 24.0
+content_margin_top = 16.0
+content_margin_right = 24.0
+content_margin_bottom = 16.0
+
+[sub_resource type="StyleBoxFlat" id="Style_Badge"]
+bg_color = Color(0.18, 0.14, 0.05, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.78, 0.2, 0.9)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="Style_SubHeader"]
+bg_color = Color(0.06, 0.09, 0.14, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.16, 0.24, 0.36, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxFlat" id="Style_ScrollBox"]
+bg_color = Color(0.05, 0.07, 0.11, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.16, 0.24, 0.36, 0.6)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 12.0
+content_margin_top = 12.0
+content_margin_right = 12.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="Style_BackBtn"]
+bg_color = Color(0.12, 0.16, 0.24, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.35, 0.5, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_BackBtnHover"]
+bg_color = Color(0.18, 0.24, 0.36, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.35, 0.75, 1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_SecondaryBtn"]
+bg_color = Color(0.1, 0.14, 0.22, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.22, 0.32, 0.45, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_SecondaryBtnHover"]
+bg_color = Color(0.15, 0.2, 0.32, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.75, 0.2, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="Achievements" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_achievements_script")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("Style_Bg")
+
+[node name="MainLayout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderPanel" type="PanelContainer" parent="MainLayout"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_HeaderPanel")
+
+[node name="HeaderHBox" type="HBoxContainer" parent="MainLayout/HeaderPanel"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleVBox" type="VBoxContainer" parent="MainLayout/HeaderPanel/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Title" type="Label" parent="MainLayout/HeaderPanel/HeaderHBox/TitleVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.15, 1)
+theme_override_font_sizes/font_size = 26
+text = "🏆 ACHIEVEMENTS & REWARDS"
+
+[node name="Subtitle" type="Label" parent="MainLayout/HeaderPanel/HeaderHBox/TitleVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 13
+text = "Complete typing, racing, and nitro challenges to unlock bonus XP and level up"
+
+[node name="UnlockedCounterLabel" type="Label" parent="MainLayout/HeaderPanel/HeaderHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("Style_Badge")
+text = "UNLOCKED: 0 / 8  (0%)"
+
+[node name="ContentMargin" type="MarginContainer" parent="MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="ContentVBox" type="VBoxContainer" parent="MainLayout/ContentMargin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 12
+
+[node name="SubHeaderPanel" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_SubHeader")
+
+[node name="TotalXpBadge" type="Label" parent="MainLayout/ContentMargin/ContentVBox/SubHeaderPanel"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 13
+text = "LEVEL 1  •  0 TOTAL XP  •  +0 XP FROM ACHIEVEMENTS"
+horizontal_alignment = 1
+
+[node name="ScrollPanel" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("Style_ScrollBox")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MainLayout/ContentMargin/ContentVBox/ScrollPanel"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="AchievementsList" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/ScrollPanel/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+
+[node name="FooterBar" type="HBoxContainer" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="BackButton" type="Button" parent="MainLayout/ContentMargin/ContentVBox/FooterBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 46)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("Style_BackBtn")
+theme_override_styles/hover = SubResource("Style_BackBtnHover")
+theme_override_styles/pressed = SubResource("Style_BackBtnHover")
+theme_override_styles/focus = SubResource("Style_BackBtnHover")
+text = "◀  BACK TO MAIN MENU"
+
+[node name="StatsButton" type="Button" parent="MainLayout/ContentMargin/ContentVBox/FooterBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 46)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.98, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("Style_SecondaryBtn")
+theme_override_styles/hover = SubResource("Style_SecondaryBtnHover")
+theme_override_styles/pressed = SubResource("Style_SecondaryBtnHover")
+theme_override_styles/focus = SubResource("Style_SecondaryBtnHover")
+text = "📊  CAREER STATS"
