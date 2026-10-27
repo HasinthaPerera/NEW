@@ -523,11 +523,12 @@ horizontal_alignment = 1
 
 [node name="FooterBar" type="HBoxContainer" parent="MainLayout/ContentMargin/ContentVBox"]
 layout_mode = 2
+theme_override_constants/separation = 16
 alignment = 1
 
 [node name="BackButton" type="Button" parent="MainLayout/ContentMargin/ContentVBox/FooterBar"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(260, 48)
+custom_minimum_size = Vector2(240, 48)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
 theme_override_font_sizes/font_size = 15
@@ -536,3 +537,15 @@ theme_override_styles/hover = SubResource("Style_BackBtnHover")
 theme_override_styles/pressed = SubResource("Style_BackBtnHover")
 theme_override_styles/focus = SubResource("Style_BackBtnHover")
 text = "◀  BACK TO MAIN MENU"
+
+[node name="AchievementsButton" type="Button" parent="MainLayout/ContentMargin/ContentVBox/FooterBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 48)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.35, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("Style_BackBtn")
+theme_override_styles/hover = SubResource("Style_BackBtnHover")
+theme_override_styles/pressed = SubResource("Style_BackBtnHover")
+theme_override_styles/focus = SubResource("Style_BackBtnHover")
+text = "🏆  VIEW ACHIEVEMENTS"

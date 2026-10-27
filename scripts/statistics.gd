@@ -16,9 +16,12 @@ extends Control
 @onready var recent_races_list: VBoxContainer = %RecentRacesList
 @onready var empty_state: Control = %EmptyState
 @onready var back_button: Button = %BackButton
+@onready var achievements_button: Button = %AchievementsButton
 
 func _ready() -> void:
 	back_button.pressed.connect(_on_back_pressed)
+	if achievements_button:
+		achievements_button.pressed.connect(_on_achievements_pressed)
 	back_button.grab_focus()
 	_populate_stats()
 
@@ -167,6 +170,12 @@ func _create_race_row(race: Dictionary) -> void:
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file.call_deferred("res://scenes/main_menu.tscn")
+
+func _on_achievements_pressed() -> void:
+	if ResourceLoader.exists("res://scenes/achievements.tscn"):
+		get_tree().change_scene_to_file.call_deferred("res://scenes/achievements.tscn")
+	else:
+		push_warning("Achievements scene not yet available.")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):

@@ -1,5 +1,7 @@
 extends Node
 
+signal achievement_unlocked(id: String, achievement_data: Dictionary)
+
 # Persistent Game Manager and Settings
 # Handles player car customization, difficulty, local save/load, and scene transitions.
 
@@ -48,6 +50,93 @@ const DIFFICULTY_CONFIG: Dictionary = {
 	}
 }
 
+# Centralized Achievement Definitions Catalog
+const ACHIEVEMENTS_CATALOG: Dictionary = {
+	"first_race": {
+		"id": "first_race",
+		"name": "First Race",
+		"description": "Complete 1 race",
+		"requirement": "Complete 1 race",
+		"reward_xp": 50,
+		"icon": "🏁",
+		"target": 1
+	},
+	"first_victory": {
+		"id": "first_victory",
+		"name": "First Victory",
+		"description": "Win 1 race",
+		"requirement": "Win 1 race",
+		"reward_xp": 100,
+		"icon": "🏆",
+		"target": 1
+	},
+	"speed_typist": {
+		"id": "speed_typist",
+		"name": "Speed Typist",
+		"description": "Finish a race with at least 60 WPM",
+		"requirement": "Finish a race with at least 60 WPM",
+		"reward_xp": 100,
+		"icon": "⚡",
+		"target": 60
+	},
+	"perfect_accuracy": {
+		"id": "perfect_accuracy",
+		"name": "Perfect Accuracy",
+		"description": "Finish a race with 100% accuracy",
+		"requirement": "Finish a race with 100% accuracy",
+		"reward_xp": 150,
+		"icon": "🎯",
+		"target": 100
+	},
+	"nitro_master": {
+		"id": "nitro_master",
+		"name": "Nitro Master",
+		"description": "Activate nitro 10 times across completed and active races",
+		"requirement": "Activate nitro 10 times across completed and active races",
+		"reward_xp": 100,
+		"icon": "🔥",
+		"target": 10
+	},
+	"consistent_racer": {
+		"id": "consistent_racer",
+		"name": "Consistent Racer",
+		"description": "Complete 10 races",
+		"requirement": "Complete 10 races",
+		"reward_xp": 150,
+		"icon": "🏎",
+		"target": 10
+	},
+	"champion": {
+		"id": "champion",
+		"name": "Champion",
+		"description": "Win 10 races",
+		"requirement": "Win 10 races",
+		"reward_xp": 250,
+		"icon": "👑",
+		"target": 10
+	},
+	"racing_legend": {
+		"id": "racing_legend",
+		"name": "Racing Legend",
+		"description": "Reach Level 20",
+		"requirement": "Reach Level 20",
+		"reward_xp": 500,
+		"icon": "⭐",
+		"target": 20
+	}
+}
+
+const ACHIEVEMENT_ORDER: Array[String] = [
+	"first_race",
+	"first_victory",
+	"speed_typist",
+	"perfect_accuracy",
+	"nitro_master",
+	"consistent_racer",
+	"champion",
+	"racing_legend"
+]
+
 var selected_color_name: String = "Orange"
 var player_car_color: Color = Color("#FF791B")
 var ai_difficulty: String = "Medium"
@@ -64,6 +153,23 @@ var stats_total_incorrect_keystrokes: int = 0
 var stats_total_completed_phrases: int = 0
 var recent_races: Array[Dictionary] = []
 
+# Achievement Tracking & Persistence
+var unlocked_achievements: Dictionary = {}
+var stats_nitro_activations: int = 0
+var _is_evaluating_achievements: bool = false
+
+# Toast Notification System
+var notification_queue: Array[Dictionary] = []
+var toast_canvas: CanvasLayer = null
+var toast_panel: PanelContainer = null
+var toast_icon_label: Label = null
+var toast_title_label: Label = null
+var toast_name_label: Label = null
+var toast_reward_label: Label = null
+var toast_timer: float = 0.0
+var is_toast_active: bool = false
+const TOAST_DURATION: float = 3.5
+
 # Player Level & Experience Points (XP)
 const XP_COMPLETION: int = 100
 const XP_POSITION: Dictionary = {
@@ -79,6 +185,7 @@ var last_race_xp: Dictionary = {}
 func _ready() -> void:
 	load_settings()
 	load_stats()
+	_setup_notification_system()
 
 func set_car_color_by_name(color_name: String) -> void:
 	if COLOR_PRESETS.has(color_name):
@@ -344,8 +451,319 @@ func record_race_result(result: Dictionary) -> Dictionary:
 	if recent_races.size() > 20:
 		recent_races.resize(20)
 
+	# Evaluate race-based achievements
+	evaluate_achievements(entry)
+
 	save_stats()
 	return last_race_xp
+
+# --- Achievement Tracking & Rewards ---
+
+func is_achievement_unlocked(id: String) -> bool:
+	return unlocked_achievements.has(id)
+
+func get_unlocked_achievements_count() -> int:
+	return unlocked_achievements.size()
+
+func record_nitro_activation() -> void:
+	stats_nitro_activations += 1
+	save_stats()
+	evaluate_achievements()
+
+func unlock_achievement(id: String) -> bool:
+	if is_achievement_unlocked(id) or not ACHIEVEMENTS_CATALOG.has(id):
+		return false
+	_unlock_achievement_internal(id)
+	evaluate_achievements()
+	save_stats()
+	return true
+
+func _unlock_achievement_internal(id: String) -> void:
+	if is_achievement_unlocked(id) or not ACHIEVEMENTS_CATALOG.has(id):
+		return
+
+	var ach: Dictionary = ACHIEVEMENTS_CATALOG[id]
+	var dt := Time.get_datetime_dict_from_system()
+	var date_str := "%04d-%02d-%02d %02d:%02d" % [dt.year, dt.month, dt.day, dt.hour, dt.minute]
+	var unix_ts: int = int(Time.get_unix_time_from_system())
+
+	unlocked_achievements[id] = {
+		"unlocked_at": date_str,
+		"timestamp": unix_ts
+	}
+
+	var reward_xp: int = int(ach.get("reward_xp", 0))
+	if reward_xp > 0:
+		total_xp += reward_xp
+
+	show_achievement_notification(str(ach.get("name", "Achievement")), reward_xp, str(ach.get("icon", "🏆")))
+	achievement_unlocked.emit(id, ach)
+
+func evaluate_achievements(race_data: Dictionary = {}) -> Array[String]:
+	if _is_evaluating_achievements:
+		return []
+	_is_evaluating_achievements = true
+
+	var newly_unlocked: Array[String] = []
+	var pass_count: int = 0
+	var something_unlocked: bool = true
+
+	while something_unlocked and pass_count < 10:
+		pass_count += 1
+		something_unlocked = false
+
+		for id in ACHIEVEMENT_ORDER:
+			if is_achievement_unlocked(id):
+				continue
+
+			var can_unlock: bool = false
+			match id:
+				"first_race":
+					if stats_races_played >= 1:
+						can_unlock = true
+				"first_victory":
+					if stats_race_wins >= 1:
+						can_unlock = true
+				"speed_typist":
+					if (race_data.has("wpm") and float(race_data["wpm"]) >= 60.0) or stats_best_wpm >= 60.0:
+						can_unlock = true
+				"perfect_accuracy":
+					if race_data.has("accuracy") and (float(race_data["accuracy"]) >= 100.0 or is_equal_approx(float(race_data["accuracy"]), 100.0)):
+						can_unlock = true
+				"nitro_master":
+					if stats_nitro_activations >= 10:
+						can_unlock = true
+				"consistent_racer":
+					if stats_races_played >= 10:
+						can_unlock = true
+				"champion":
+					if stats_race_wins >= 10:
+						can_unlock = true
+				"racing_legend":
+					var lvl_info := get_level_info(total_xp)
+					if int(lvl_info.get("level", 1)) >= 20:
+						can_unlock = true
+
+			if can_unlock:
+				_unlock_achievement_internal(id)
+				newly_unlocked.append(id)
+				something_unlocked = true
+
+	_is_evaluating_achievements = false
+	if not newly_unlocked.is_empty():
+		save_stats()
+	return newly_unlocked
+
+func get_achievement_progress(id: String) -> Dictionary:
+	if not ACHIEVEMENTS_CATALOG.has(id):
+		return {}
+
+	var ach: Dictionary = ACHIEVEMENTS_CATALOG[id]
+	var is_unlocked: bool = is_achievement_unlocked(id)
+	var unlock_data: Dictionary = unlocked_achievements.get(id, {})
+	var unlocked_at: String = str(unlock_data.get("unlocked_at", ""))
+	var timestamp: int = int(unlock_data.get("timestamp", 0))
+
+	var current_val: float = 0.0
+	var target_val: float = float(ach.get("target", 1))
+	var progress_text: String = ""
+
+	match id:
+		"first_race":
+			current_val = float(stats_races_played)
+			progress_text = "%d / %d" % [mini(stats_races_played, 1), 1]
+		"first_victory":
+			current_val = float(stats_race_wins)
+			progress_text = "%d / %d" % [mini(stats_race_wins, 1), 1]
+		"speed_typist":
+			current_val = float(stats_best_wpm)
+			progress_text = "%.0f / 60 WPM" % minf(stats_best_wpm, 60.0)
+		"perfect_accuracy":
+			current_val = 1.0 if is_unlocked else 0.0
+			progress_text = "100% Accuracy" if is_unlocked else "In a single race"
+		"nitro_master":
+			current_val = float(stats_nitro_activations)
+			progress_text = "%d / 10" % mini(stats_nitro_activations, 10)
+		"consistent_racer":
+			current_val = float(stats_races_played)
+			progress_text = "%d / 10" % mini(stats_races_played, 10)
+		"champion":
+			current_val = float(stats_race_wins)
+			progress_text = "%d / 10" % mini(stats_race_wins, 10)
+		"racing_legend":
+			var lvl_info := get_level_info(total_xp)
+			var current_lvl: int = int(lvl_info.get("level", 1))
+			current_val = float(current_lvl)
+			progress_text = "Level %d / 20" % mini(current_lvl, 20)
+
+	var ratio: float = 1.0 if is_unlocked else clampf(current_val / target_val, 0.0, 1.0)
+
+	return {
+		"id": id,
+		"name": ach.get("name", ""),
+		"description": ach.get("description", ""),
+		"requirement": ach.get("requirement", ""),
+		"reward_xp": int(ach.get("reward_xp", 0)),
+		"icon": ach.get("icon", "🏆"),
+		"is_unlocked": is_unlocked,
+		"unlocked_at": unlocked_at,
+		"timestamp": timestamp,
+		"current_value": current_val,
+		"target_value": target_val,
+		"progress_ratio": ratio,
+		"progress_text": progress_text
+	}
+
+func get_all_achievements_progress() -> Array[Dictionary]:
+	var list: Array[Dictionary] = []
+	for id in ACHIEVEMENT_ORDER:
+		list.append(get_achievement_progress(id))
+	return list
+
+# --- Unlock Notifications Overlay ---
+
+func show_achievement_notification(ach_name: String, reward_xp: int, icon: String = "🏆") -> void:
+	notification_queue.append({
+		"name": ach_name,
+		"reward_xp": reward_xp,
+		"icon": icon
+	})
+
+func _setup_notification_system() -> void:
+	if toast_canvas:
+		return
+
+	toast_canvas = CanvasLayer.new()
+	toast_canvas.name = "AchievementToastLayer"
+	toast_canvas.layer = 128
+	add_child(toast_canvas)
+
+	var screen_ctrl := Control.new()
+	screen_ctrl.name = "ToastRoot"
+	screen_ctrl.set_anchors_preset(Control.PRESET_FULL_RECT)
+	screen_ctrl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	toast_canvas.add_child(screen_ctrl)
+
+	toast_panel = PanelContainer.new()
+	toast_panel.name = "AchievementToastPanel"
+	toast_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	toast_panel.custom_minimum_size = Vector2(380, 70)
+	toast_panel.anchor_left = 0.5
+	toast_panel.anchor_right = 0.5
+	toast_panel.anchor_top = 0.0
+	toast_panel.anchor_bottom = 0.0
+	toast_panel.offset_left = -190.0
+	toast_panel.offset_right = 190.0
+	toast_panel.offset_top = -100.0
+	toast_panel.offset_bottom = -30.0
+	toast_panel.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	toast_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	toast_panel.visible = false
+
+	var toast_style := StyleBoxFlat.new()
+	toast_style.bg_color = Color(0.06, 0.08, 0.14, 0.96)
+	toast_style.border_color = Color(1.0, 0.75, 0.1, 1.0) # Gold
+	toast_style.border_width_left = 2
+	toast_style.border_width_top = 2
+	toast_style.border_width_right = 2
+	toast_style.border_width_bottom = 2
+	toast_style.corner_radius_top_left = 10
+	toast_style.corner_radius_top_right = 10
+	toast_style.corner_radius_bottom_left = 10
+	toast_style.corner_radius_bottom_right = 10
+	toast_style.shadow_color = Color(1.0, 0.6, 0.0, 0.45)
+	toast_style.shadow_size = 12
+	toast_style.content_margin_left = 16
+	toast_style.content_margin_right = 16
+	toast_style.content_margin_top = 8
+	toast_style.content_margin_bottom = 8
+	toast_panel.add_theme_stylebox_override("panel", toast_style)
+	screen_ctrl.add_child(toast_panel)
+
+	var hbox := HBoxContainer.new()
+	hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hbox.add_theme_constant_override("separation", 14)
+	toast_panel.add_child(hbox)
+
+	toast_icon_label = Label.new()
+	toast_icon_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	toast_icon_label.custom_minimum_size = Vector2(40, 40)
+	toast_icon_label.add_theme_font_size_override("font_size", 28)
+	toast_icon_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	toast_icon_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	toast_icon_label.text = "🏆"
+	hbox.add_child(toast_icon_label)
+
+	var vbox := VBoxContainer.new()
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.add_theme_constant_override("separation", 1)
+	hbox.add_child(vbox)
+
+	toast_title_label = Label.new()
+	toast_title_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	toast_title_label.text = "ACHIEVEMENT UNLOCKED!"
+	toast_title_label.add_theme_font_size_override("font_size", 11)
+	toast_title_label.add_theme_color_override("font_color", Color(1.0, 0.78, 0.15))
+	vbox.add_child(toast_title_label)
+
+	toast_name_label = Label.new()
+	toast_name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	toast_name_label.text = "Achievement Name"
+	toast_name_label.add_theme_font_size_override("font_size", 16)
+	toast_name_label.add_theme_color_override("font_color", Color.WHITE)
+	vbox.add_child(toast_name_label)
+
+	toast_reward_label = Label.new()
+	toast_reward_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	toast_reward_label.text = "+100 XP"
+	toast_reward_label.add_theme_font_size_override("font_size", 12)
+	toast_reward_label.add_theme_color_override("font_color", Color(0.3, 0.9, 0.45))
+	vbox.add_child(toast_reward_label)
+
+func _process(delta: float) -> void:
+	if is_toast_active:
+		toast_timer -= delta
+		if toast_panel:
+			if toast_timer > TOAST_DURATION - 0.35:
+				var t: float = (TOAST_DURATION - toast_timer) / 0.35
+				var eased: float = ease(clampf(t, 0.0, 1.0), -2.0)
+				toast_panel.position.y = lerpf(-100.0, 20.0, eased)
+				toast_panel.modulate.a = clampf(t, 0.0, 1.0)
+			elif toast_timer < 0.35:
+				var t: float = toast_timer / 0.35
+				var eased: float = ease(clampf(t, 0.0, 1.0), -2.0)
+				toast_panel.position.y = lerpf(-100.0, 20.0, eased)
+				toast_panel.modulate.a = clampf(t, 0.0, 1.0)
+			else:
+				toast_panel.position.y = 20.0
+				toast_panel.modulate.a = 1.0
+
+		if toast_timer <= 0.0:
+			is_toast_active = false
+			if toast_panel:
+				toast_panel.visible = false
+	elif not notification_queue.is_empty():
+		var next_item: Dictionary = notification_queue.pop_front()
+		_show_toast_item(next_item)
+
+func _show_toast_item(item: Dictionary) -> void:
+	if not toast_panel:
+		return
+	if toast_icon_label:
+		toast_icon_label.text = str(item.get("icon", "🏆"))
+	if toast_name_label:
+		toast_name_label.text = str(item.get("name", "Achievement"))
+	if toast_reward_label:
+		var xp_amt: int = int(item.get("reward_xp", 0))
+		toast_reward_label.text = "+%d XP" % xp_amt
+	toast_timer = TOAST_DURATION
+	is_toast_active = true
+	toast_panel.visible = true
+	toast_panel.position.y = -100.0
+	toast_panel.modulate.a = 0.0
+
+# --- Persistence ---
 
 func save_stats() -> void:
 	var total_keys := stats_total_correct_keystrokes + stats_total_incorrect_keystrokes
@@ -373,7 +791,10 @@ func save_stats() -> void:
 			"level": lvl_info["level"],
 			"title": lvl_info["title"]
 		},
-		"achievements": {}
+		"achievements": unlocked_achievements,
+		"custom_stats": {
+			"nitro_activations": stats_nitro_activations
+		}
 	}
 
 	var file := FileAccess.open(STATS_PATH, FileAccess.WRITE)
@@ -384,11 +805,15 @@ func save_stats() -> void:
 func load_stats() -> void:
 	if not FileAccess.file_exists(STATS_PATH):
 		total_xp = 0
+		unlocked_achievements.clear()
+		stats_nitro_activations = 0
 		return # Use defaults safely
 
 	var file := FileAccess.open(STATS_PATH, FileAccess.READ)
 	if not file:
 		total_xp = 0
+		unlocked_achievements.clear()
+		stats_nitro_activations = 0
 		return
 
 	var text := file.get_as_text()
@@ -396,6 +821,8 @@ func load_stats() -> void:
 
 	if text.strip_edges().is_empty():
 		total_xp = 0
+		unlocked_achievements.clear()
+		stats_nitro_activations = 0
 		return
 
 	var json := JSON.new()
@@ -403,6 +830,8 @@ func load_stats() -> void:
 	if err != OK or not (json.data is Dictionary):
 		push_warning("Failed to parse stats.json or format is invalid. Using default statistics.")
 		total_xp = 0
+		unlocked_achievements.clear()
+		stats_nitro_activations = 0
 		return
 
 	var d: Dictionary = json.data
@@ -458,6 +887,38 @@ func load_stats() -> void:
 			if recent_races.size() >= 20:
 				break
 
+	# Load Achievements (Safe backwards compatibility with older formats)
+	unlocked_achievements.clear()
+	if d.has("achievements"):
+		if d["achievements"] is Dictionary:
+			for k in d["achievements"].keys():
+				var ach_entry = d["achievements"][k]
+				if ach_entry is Dictionary:
+					unlocked_achievements[str(k)] = {
+						"unlocked_at": str(ach_entry.get("unlocked_at", "")),
+						"timestamp": int(ach_entry.get("timestamp", 0))
+					}
+				else:
+					unlocked_achievements[str(k)] = {
+						"unlocked_at": "Unlocked",
+						"timestamp": 0
+					}
+		elif d["achievements"] is Array:
+			for item in d["achievements"]:
+				unlocked_achievements[str(item)] = {
+					"unlocked_at": "Unlocked",
+					"timestamp": 0
+				}
+
+	# Load Nitro Activations Count
+	stats_nitro_activations = 0
+	if d.has("custom_stats") and d["custom_stats"] is Dictionary:
+		stats_nitro_activations = maxi(0, int(d["custom_stats"].get("nitro_activations", 0)))
+	elif d.has("nitro_activations"):
+		stats_nitro_activations = maxi(0, int(d["nitro_activations"]))
+	elif d.has("career") and d["career"] is Dictionary and d["career"].has("nitro_activations"):
+		stats_nitro_activations = maxi(0, int(d["career"]["nitro_activations"]))
+
 func clear_stats() -> void:
 	stats_races_played = 0
 	stats_race_wins = 0
@@ -467,6 +928,8 @@ func clear_stats() -> void:
 	stats_total_incorrect_keystrokes = 0
 	stats_total_completed_phrases = 0
 	total_xp = 0
+	unlocked_achievements.clear()
+	stats_nitro_activations = 0
 	last_race_xp.clear()
 	recent_races.clear()
 	save_stats()

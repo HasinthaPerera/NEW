@@ -5,6 +5,7 @@ extends Node3D
 @onready var play_race_button: Button = $UI/MainMenuPanel/Margin/VBox/MenuButtons/PlayRaceButton
 @onready var garage_button: Button = $UI/MainMenuPanel/Margin/VBox/MenuButtons/GarageButton
 @onready var stats_button: Button = $UI/MainMenuPanel/Margin/VBox/MenuButtons/StatsButton
+@onready var achievements_button: Button = $UI/MainMenuPanel/Margin/VBox/MenuButtons/AchievementsButton
 @onready var settings_button: Button = $UI/MainMenuPanel/Margin/VBox/MenuButtons/SettingsButton
 @onready var exit_button: Button = $UI/MainMenuPanel/Margin/VBox/MenuButtons/ExitButton
 
@@ -29,6 +30,7 @@ func _ready() -> void:
 	play_race_button.pressed.connect(_on_play_race_pressed)
 	garage_button.pressed.connect(_on_garage_pressed)
 	stats_button.pressed.connect(_on_stats_pressed)
+	achievements_button.pressed.connect(_on_achievements_pressed)
 	settings_button.pressed.connect(_on_settings_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
 
@@ -71,6 +73,12 @@ func _on_stats_pressed() -> void:
 		get_tree().change_scene_to_file.call_deferred("res://scenes/statistics.tscn")
 	else:
 		push_warning("Statistics scene not yet available.")
+
+func _on_achievements_pressed() -> void:
+	if ResourceLoader.exists("res://scenes/achievements.tscn"):
+		get_tree().change_scene_to_file.call_deferred("res://scenes/achievements.tscn")
+	else:
+		push_warning("Achievements scene not yet available.")
 
 func _on_settings_pressed() -> void:
 	settings_modal.visible = true
