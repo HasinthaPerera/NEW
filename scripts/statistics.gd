@@ -169,7 +169,8 @@ func _create_race_row(race: Dictionary) -> void:
 	recent_races_list.add_child(row)
 
 func _on_back_pressed() -> void:
-	get_tree().change_scene_to_file.call_deferred("res://scenes/main_menu.tscn")
+	var target: String = GameManager.get_return_screen("res://scenes/main_menu.tscn") if is_instance_valid(GameManager) else "res://scenes/main_menu.tscn"
+	get_tree().change_scene_to_file.call_deferred(target)
 
 func _on_achievements_pressed() -> void:
 	if ResourceLoader.exists("res://scenes/achievements.tscn"):

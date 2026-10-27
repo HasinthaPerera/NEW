@@ -227,7 +227,7 @@ theme_override_styles/normal = SubResource("Style_BackBtn")
 theme_override_styles/hover = SubResource("Style_BackBtnHover")
 theme_override_styles/pressed = SubResource("Style_BackBtnHover")
 theme_override_styles/focus = SubResource("Style_BackBtnHover")
-text = "◀  BACK TO MAIN MENU"
+text = "◀  BACK"
 
 [node name="StatsButton" type="Button" parent="MainLayout/ContentMargin/ContentVBox/FooterBar"]
 unique_name_in_owner = true

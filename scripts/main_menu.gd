@@ -69,12 +69,18 @@ func _on_garage_pressed() -> void:
 		push_warning("Garage scene not yet available.")
 
 func _on_stats_pressed() -> void:
-	if ResourceLoader.exists("res://scenes/statistics.tscn"):
+	if is_instance_valid(GameManager):
+		GameManager.set_return_screen("res://scenes/main_menu.tscn")
+	if ResourceLoader.exists("res://scenes/career.tscn"):
+		get_tree().change_scene_to_file.call_deferred("res://scenes/career.tscn")
+	elif ResourceLoader.exists("res://scenes/statistics.tscn"):
 		get_tree().change_scene_to_file.call_deferred("res://scenes/statistics.tscn")
 	else:
-		push_warning("Statistics scene not yet available.")
+		push_warning("Career scene not yet available.")
 
 func _on_achievements_pressed() -> void:
+	if is_instance_valid(GameManager):
+		GameManager.set_return_screen("res://scenes/main_menu.tscn")
 	if ResourceLoader.exists("res://scenes/achievements.tscn"):
 		get_tree().change_scene_to_file.call_deferred("res://scenes/achievements.tscn")
 	else:

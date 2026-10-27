@@ -158,6 +158,9 @@ var unlocked_achievements: Dictionary = {}
 var stats_nitro_activations: int = 0
 var _is_evaluating_achievements: bool = false
 
+# Subscreen Navigation Tracking
+var return_screen_path: String = "res://scenes/main_menu.tscn"
+
 # Toast Notification System
 var notification_queue: Array[Dictionary] = []
 var toast_canvas: CanvasLayer = null
@@ -208,6 +211,12 @@ func set_volume(vol: float) -> void:
 func set_sound_enabled(enabled: bool) -> void:
 	sound_enabled = enabled
 	save_settings()
+
+func set_return_screen(path: String) -> void:
+	return_screen_path = path
+
+func get_return_screen(fallback: String = "res://scenes/main_menu.tscn") -> String:
+	return return_screen_path if not return_screen_path.is_empty() else fallback
 
 # Returns distinct colors for the 3 AI racers excluding player's selected color
 func get_ai_colors() -> Array[Dictionary]:
