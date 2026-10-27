@@ -286,7 +286,7 @@ theme_override_styles/normal = SubResource("Style_SecondaryBtn")
 theme_override_styles/hover = SubResource("Style_SecondaryBtnHover")
 theme_override_styles/pressed = SubResource("Style_SecondaryBtnHover")
 theme_override_styles/focus = SubResource("Style_SecondaryBtnHover")
-text = "📊  STATISTICS"
+text = "🏁  CAREER DASHBOARD"
 
 [node name="AchievementsButton" type="Button" parent="UI/MainMenuPanel/Margin/VBox/MenuButtons"]
 custom_minimum_size = Vector2(0, 48)

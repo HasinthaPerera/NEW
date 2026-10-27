@@ -181,13 +181,13 @@ theme_override_constants/separation = 2
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 24
-text = "📊  CAREER STATISTICS"
+text = "📊  FULL RACE HISTORY & STATISTICS"
 
 [node name="Subtitle" type="Label" parent="MainLayout/HeaderPanel/HeaderVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.55, 0.68, 0.85, 1)
 theme_override_font_sizes/font_size = 12
-text = "Track your typing speed, racing performance, and victory records"
+text = "Comprehensive race history, typing performance, and career records"
 
 [node name="ContentMargin" type="MarginContainer" parent="MainLayout"]
 layout_mode = 2
@@ -536,7 +536,7 @@ theme_override_styles/normal = SubResource("Style_BackBtn")
 theme_override_styles/hover = SubResource("Style_BackBtnHover")
 theme_override_styles/pressed = SubResource("Style_BackBtnHover")
 theme_override_styles/focus = SubResource("Style_BackBtnHover")
-text = "◀  BACK TO MAIN MENU"
+text = "◀  BACK"
 
 [node name="AchievementsButton" type="Button" parent="MainLayout/ContentMargin/ContentVBox/FooterBar"]
 unique_name_in_owner = true
