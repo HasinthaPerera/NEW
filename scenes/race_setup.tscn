@@ -321,7 +321,7 @@ theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 18
 theme_override_styles/normal = SubResource("Style_StartBtn")
 theme_override_styles/hover = SubResource("Style_StartBtnHover")
-text = "🏁  START RACE"
+text = "CHOOSE TRACK  ➔"
 
 [node name="CustomizeButton" type="Button" parent="UI/Panel/Margin/VBox/ActionButtons"]
 custom_minimum_size = Vector2(0, 44)

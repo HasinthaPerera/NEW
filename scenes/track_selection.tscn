@@ -1,0 +1,601 @@
+[gd_scene format=3 uid="uid://c6t5trkselection"]
+
+[ext_resource type="Script" path="res://scripts/track_selection.gd" id="1_track_script"]
+
+[sub_resource type="StyleBoxFlat" id="Style_Bg"]
+bg_color = Color(0.04, 0.05, 0.08, 1)
+
+[sub_resource type="StyleBoxFlat" id="Style_HeaderPanel"]
+bg_color = Color(0.07, 0.1, 0.15, 0.95)
+border_width_bottom = 2
+border_color = Color(1, 0.48, 0.1, 0.85)
+content_margin_left = 24.0
+content_margin_top = 14.0
+content_margin_right = 24.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxFlat" id="Style_Badge"]
+bg_color = Color(0.1, 0.14, 0.22, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.35, 0.5, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 14.0
+content_margin_top = 6.0
+content_margin_right = 14.0
+content_margin_bottom = 6.0
+
+[sub_resource type="StyleBoxFlat" id="Style_TrackCard"]
+bg_color = Color(0.07, 0.09, 0.14, 0.92)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.18, 0.25, 0.38, 0.7)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+content_margin_left = 16.0
+content_margin_top = 14.0
+content_margin_right = 16.0
+content_margin_bottom = 14.0
+
+[sub_resource type="StyleBoxFlat" id="Style_PreviewCity"]
+bg_color = Color(0.08, 0.13, 0.22, 0.95)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.45, 0.7, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_PreviewDesert"]
+bg_color = Color(0.16, 0.11, 0.06, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.45, 0.3, 0.15, 0.7)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_PreviewForest"]
+bg_color = Color(0.06, 0.13, 0.08, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.2, 0.4, 0.25, 0.7)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_PlayablePill"]
+bg_color = Color(0.08, 0.25, 0.14, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.9, 0.45, 0.8)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="Style_ComingSoonPill"]
+bg_color = Color(0.15, 0.15, 0.18, 0.8)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.35, 0.42, 0.6)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+
+[sub_resource type="StyleBoxFlat" id="Style_SelectBtn"]
+bg_color = Color(0.12, 0.16, 0.24, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.25, 0.35, 0.5, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_SelectBtnHover"]
+bg_color = Color(0.18, 0.25, 0.38, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.48, 0.1, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="Style_StartBtn"]
+bg_color = Color(0.98, 0.44, 0.05, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.75, 0.3, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(1, 0.44, 0.05, 0.45)
+shadow_size = 14
+
+[sub_resource type="StyleBoxFlat" id="Style_StartBtnHover"]
+bg_color = Color(1, 0.55, 0.12, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.9, 0.6, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(1, 0.55, 0.12, 0.6)
+shadow_size = 18
+
+[sub_resource type="StyleBoxFlat" id="Style_DetailsCard"]
+bg_color = Color(0.06, 0.08, 0.12, 0.9)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.16, 0.22, 0.32, 0.8)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+
+[node name="TrackSelection" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_track_script")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("Style_Bg")
+
+[node name="MainLayout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="HeaderPanel" type="PanelContainer" parent="MainLayout"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_HeaderPanel")
+
+[node name="HeaderHBox" type="HBoxContainer" parent="MainLayout/HeaderPanel"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="TitleVBox" type="VBoxContainer" parent="MainLayout/HeaderPanel/HeaderHBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScreenTitle" type="Label" parent="MainLayout/HeaderPanel/HeaderHBox/TitleVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.48, 0.1, 1)
+theme_override_font_sizes/font_size = 24
+text = "SELECT YOUR TRACK"
+
+[node name="Subtitle" type="Label" parent="MainLayout/HeaderPanel/HeaderHBox/TitleVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 13
+text = "Choose your racing circuit before hitting the asphalt"
+
+[node name="ContextBadgesHBox" type="HBoxContainer" parent="MainLayout/HeaderPanel/HeaderHBox"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 10
+
+[node name="CarBadgeLabel" type="Label" parent="MainLayout/HeaderPanel/HeaderHBox/ContextBadgesHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.48, 0.1, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("Style_Badge")
+text = "CAR: ORANGE"
+
+[node name="DiffBadgeLabel" type="Label" parent="MainLayout/HeaderPanel/HeaderHBox/ContextBadgesHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.75, 1, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("Style_Badge")
+text = "DIFFICULTY: MEDIUM"
+
+[node name="ContentMargin" type="MarginContainer" parent="MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 16
+
+[node name="ContentVBox" type="VBoxContainer" parent="MainLayout/ContentMargin"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 14
+
+[node name="TracksHBox" type="HBoxContainer" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 16
+
+[node name="CardMetro" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Style_TrackCard")
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PreviewBox" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_PreviewCity")
+
+[node name="Center" type="CenterContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox/PreviewBox"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox/PreviewBox/Center"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox/PreviewBox/Center/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 38
+text = "🏙️ ⚡"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox/PreviewBox/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.35, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 11
+text = "METROPOLITAN SPEEDWAY"
+horizontal_alignment = 1
+
+[node name="TrackName" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "Metro Sprint"
+
+[node name="MetaRow" type="HBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox"]
+layout_mode = 2
+
+[node name="EnvLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox/MetaRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "📍 City"
+
+[node name="Spacer" type="Control" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox/MetaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LenLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox/MetaRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3, 0.85, 1, 1)
+theme_override_font_sizes/font_size = 12
+text = "📏 Short (500m)"
+
+[node name="StatusPill" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(0.25, 0.9, 0.45, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("Style_PlayablePill")
+text = "✔  PLAYABLE"
+
+[node name="DescLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.68, 0.76, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "Fast urban racing through a modern city."
+autowrap_mode = 3
+
+[node name="Spacer" type="Control" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BtnSelectMetro" type="Button" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardMetro/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("Style_SelectBtn")
+theme_override_styles/hover = SubResource("Style_SelectBtnHover")
+theme_override_styles/pressed = SubResource("Style_SelectBtnHover")
+theme_override_styles/focus = SubResource("Style_SelectBtnHover")
+text = "✓ SELECTED"
+
+[node name="CardDesert" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Style_TrackCard")
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PreviewBox" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_PreviewDesert")
+
+[node name="Center" type="CenterContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox/PreviewBox"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox/PreviewBox/Center"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox/PreviewBox/Center/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 38
+text = "🏜️ ☀️"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox/PreviewBox/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.72, 0.3, 1)
+theme_override_font_sizes/font_size = 11
+text = "CANYON DESERT HIGHWAY"
+horizontal_alignment = 1
+
+[node name="TrackName" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.78, 0.85, 1)
+theme_override_font_sizes/font_size = 18
+text = "Desert Dash"
+
+[node name="MetaRow" type="HBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox"]
+layout_mode = 2
+
+[node name="EnvLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox/MetaRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.62, 0.72, 1)
+theme_override_font_sizes/font_size = 12
+text = "📍 Desert"
+
+[node name="Spacer" type="Control" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox/MetaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LenLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox/MetaRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.62, 0.72, 1)
+theme_override_font_sizes/font_size = 12
+text = "📏 Medium"
+
+[node name="StatusPill" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(0.65, 0.68, 0.75, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("Style_ComingSoonPill")
+text = "🔒  COMING SOON"
+
+[node name="DescLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.62, 0.72, 1)
+theme_override_font_sizes/font_size = 12
+text = "Race across a sunlit desert highway."
+autowrap_mode = 3
+
+[node name="Spacer" type="Control" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BtnSelectDesert" type="Button" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardDesert/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+disabled = true
+theme_override_colors/font_color = Color(0.6, 0.65, 0.72, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("Style_SelectBtn")
+text = "🔒 COMING SOON"
+
+[node name="CardForest" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("Style_TrackCard")
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PreviewBox" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox"]
+custom_minimum_size = Vector2(0, 130)
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_PreviewForest")
+
+[node name="Center" type="CenterContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox/PreviewBox"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox/PreviewBox/Center"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox/PreviewBox/Center/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 38
+text = "🌲 ⛰️"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox/PreviewBox/Center/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.4, 0.85, 0.55, 1)
+theme_override_font_sizes/font_size = 11
+text = "ALPINE FOREST CIRCUIT"
+horizontal_alignment = 1
+
+[node name="TrackName" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.75, 0.78, 0.85, 1)
+theme_override_font_sizes/font_size = 18
+text = "Forest Run"
+
+[node name="MetaRow" type="HBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox"]
+layout_mode = 2
+
+[node name="EnvLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox/MetaRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.62, 0.72, 1)
+theme_override_font_sizes/font_size = 12
+text = "📍 Forest"
+
+[node name="Spacer" type="Control" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox/MetaRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LenLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox/MetaRow"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.62, 0.72, 1)
+theme_override_font_sizes/font_size = 12
+text = "📏 Long"
+
+[node name="StatusPill" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox"]
+layout_mode = 2
+size_flags_horizontal = 0
+theme_override_colors/font_color = Color(0.65, 0.68, 0.75, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("Style_ComingSoonPill")
+text = "🔒  COMING SOON"
+
+[node name="DescLabel" type="Label" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.55, 0.62, 0.72, 1)
+theme_override_font_sizes/font_size = 12
+text = "Race through a scenic forest environment."
+autowrap_mode = 3
+
+[node name="Spacer" type="Control" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="BtnSelectForest" type="Button" parent="MainLayout/ContentMargin/ContentVBox/TracksHBox/CardForest/VBox"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+disabled = true
+theme_override_colors/font_color = Color(0.6, 0.65, 0.72, 1)
+theme_override_font_sizes/font_size = 14
+theme_override_styles/normal = SubResource("Style_SelectBtn")
+text = "🔒 COMING SOON"
+
+[node name="SelectedDetailsCard" type="PanelContainer" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("Style_DetailsCard")
+
+[node name="VBox" type="VBoxContainer" parent="MainLayout/ContentMargin/ContentVBox/SelectedDetailsCard"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SelectedTrackTitle" type="Label" parent="MainLayout/ContentMargin/ContentVBox/SelectedDetailsCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.15, 1)
+theme_override_font_sizes/font_size = 14
+text = "SELECTED: METRO SPRINT"
+
+[node name="SelectedTrackMeta" type="Label" parent="MainLayout/ContentMargin/ContentVBox/SelectedDetailsCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.65, 0.75, 0.88, 1)
+theme_override_font_sizes/font_size = 12
+text = "ENVIRONMENT: CITY   •   LENGTH: SHORT (500m)   •   STATUS: PLAYABLE"
+
+[node name="SelectedTrackDesc" type="Label" parent="MainLayout/ContentMargin/ContentVBox/SelectedDetailsCard/VBox"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.85, 0.9, 0.96, 1)
+theme_override_font_sizes/font_size = 12
+text = "Fast urban racing through a modern city."
+
+[node name="FooterBar" type="HBoxContainer" parent="MainLayout/ContentMargin/ContentVBox"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="BackButton" type="Button" parent="MainLayout/ContentMargin/ContentVBox/FooterBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9, 0.95, 1, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("Style_SelectBtn")
+theme_override_styles/hover = SubResource("Style_SelectBtnHover")
+theme_override_styles/pressed = SubResource("Style_SelectBtnHover")
+theme_override_styles/focus = SubResource("Style_SelectBtnHover")
+text = "◀  BACK TO RACE SETUP"
+
+[node name="StartRaceButton" type="Button" parent="MainLayout/ContentMargin/ContentVBox/FooterBar"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(260, 50)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("Style_StartBtn")
+theme_override_styles/hover = SubResource("Style_StartBtnHover")
+theme_override_styles/pressed = SubResource("Style_StartBtn")
+theme_override_styles/focus = SubResource("Style_StartBtnHover")
+text = "🏁  START RACE"
