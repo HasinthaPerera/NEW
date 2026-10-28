@@ -77,7 +77,10 @@ func _update_difficulty_ui() -> void:
 					diff_desc_label.text = "Balanced AI opponents (~45 WPM, 93% accuracy).\nModerate acceleration and occasional typos. A fun, standard racing challenge."
 
 func _on_start_race_pressed() -> void:
-	get_tree().change_scene_to_file.call_deferred("res://main.tscn")
+	if ResourceLoader.exists("res://scenes/track_selection.tscn"):
+		get_tree().change_scene_to_file.call_deferred("res://scenes/track_selection.tscn")
+	else:
+		get_tree().change_scene_to_file.call_deferred("res://main.tscn")
 
 func _on_customize_pressed() -> void:
 	get_tree().change_scene_to_file.call_deferred("res://scenes/garage.tscn")

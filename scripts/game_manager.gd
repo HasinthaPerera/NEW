@@ -137,9 +137,53 @@ const ACHIEVEMENT_ORDER: Array[String] = [
 	"racing_legend"
 ]
 
+# Centralized Track Definitions Catalog
+const TRACKS_CATALOG: Dictionary = {
+	"metro_sprint": {
+		"id": "metro_sprint",
+		"name": "Metro Sprint",
+		"display_name": "Metro Sprint",
+		"environment": "City",
+		"race_length": "Short",
+		"description": "Fast urban racing through a modern city.",
+		"status": "Playable",
+		"is_playable": true,
+		"scene_path": "res://main.tscn"
+	},
+	"desert_dash": {
+		"id": "desert_dash",
+		"name": "Desert Dash",
+		"display_name": "Desert Dash",
+		"environment": "Desert",
+		"race_length": "Medium",
+		"description": "Race across a sunlit desert highway.",
+		"status": "Coming Soon",
+		"is_playable": false,
+		"scene_path": ""
+	},
+	"forest_run": {
+		"id": "forest_run",
+		"name": "Forest Run",
+		"display_name": "Forest Run",
+		"environment": "Forest",
+		"race_length": "Long",
+		"description": "Race through a scenic forest environment.",
+		"status": "Coming Soon",
+		"is_playable": false,
+		"scene_path": ""
+	}
+}
+
+const TRACK_ORDER: Array[String] = [
+	"metro_sprint",
+	"desert_dash",
+	"forest_run"
+]
+
 var selected_color_name: String = "Orange"
 var player_car_color: Color = Color("#FF791B")
 var ai_difficulty: String = "Medium"
+var selected_track_id: String = "metro_sprint"
 var music_volume: float = 0.8
 var sound_enabled: bool = true
 
@@ -235,11 +279,43 @@ func get_ai_colors() -> Array[Dictionary]:
 		{"name": available_names[2] + " Viper", "color": COLOR_PRESETS[available_names[2]]}
 	]
 
+# Track Selection Management
+func set_track(track_id: String) -> bool:
+	if TRACKS_CATALOG.has(track_id) and bool(TRACKS_CATALOG[track_id].get("is_playable", false)):
+		selected_track_id = track_id
+		save_settings()
+		return true
+	return false
+
+func get_selected_track() -> Dictionary:
+	return TRACKS_CATALOG.get(selected_track_id, TRACKS_CATALOG["metro_sprint"])
+
+func get_track(track_id: String) -> Dictionary:
+	return TRACKS_CATALOG.get(track_id, {})
+
+func is_track_playable(track_id: String) -> bool:
+	return TRACKS_CATALOG.has(track_id) and bool(TRACKS_CATALOG[track_id].get("is_playable", false))
+
+func get_all_tracks() -> Array[Dictionary]:
+	var list: Array[Dictionary] = []
+	for id in TRACK_ORDER:
+		list.append(TRACKS_CATALOG[id])
+	return list
+
+func get_track_scene_path(track_id: String = "") -> String:
+	var t_id := track_id if not track_id.is_empty() else selected_track_id
+	if is_track_playable(t_id):
+		var p: String = str(TRACKS_CATALOG[t_id].get("scene_path", ""))
+		if not p.is_empty() and ResourceLoader.exists(p):
+			return p
+	return "res://main.tscn"
+
 # Save player preferences safely to user:// directory
 func save_settings() -> void:
 	var data: Dictionary = {
 		"selected_color_name": selected_color_name,
 		"ai_difficulty": ai_difficulty,
+		"selected_track_id": selected_track_id,
 		"music_volume": music_volume,
 		"sound_enabled": sound_enabled
 	}
@@ -282,6 +358,15 @@ func load_settings() -> void:
 		var diff: String = d["ai_difficulty"]
 		if diff in ["Easy", "Medium", "Hard"]:
 			ai_difficulty = diff
+
+	if d.has("selected_track_id") and d["selected_track_id"] is String:
+		var t_id: String = d["selected_track_id"]
+		if TRACKS_CATALOG.has(t_id) and bool(TRACKS_CATALOG[t_id].get("is_playable", false)):
+			selected_track_id = t_id
+		else:
+			selected_track_id = "metro_sprint"
+	else:
+		selected_track_id = "metro_sprint"
 
 	if d.has("music_volume") and (d["music_volume"] is float or d["music_volume"] is int):
 		music_volume = clampf(float(d["music_volume"]), 0.0, 1.0)
