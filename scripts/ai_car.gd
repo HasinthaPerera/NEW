@@ -10,6 +10,8 @@ var target_speed_kmh: float = 0.0
 var distance_traveled: float = 0.0
 var start_z: float = 0.0
 var start_x: float = 0.0
+var track_node: Node3D = null
+var assigned_lane_offset: float = 0.0
 
 var is_race_started: bool = false
 var is_race_finished: bool = false
@@ -48,6 +50,8 @@ func get_car_visuals() -> SportsCarVisuals:
 func _ready() -> void:
 	start_z = global_position.z
 	start_x = global_position.x
+	assigned_lane_offset = global_position.x
+	track_node = get_node_or_null(^"../Track")
 	_apply_car_material()
 	apply_difficulty(difficulty)
 	var v := get_car_visuals()
@@ -69,8 +73,9 @@ func apply_difficulty(diff: String) -> void:
 	var personality_offset := float((car_name.hash() % 7) - 3)
 
 	var config: Dictionary = {}
-	if is_instance_valid(GameManager) and GameManager.DIFFICULTY_CONFIG.has(difficulty):
-		config = GameManager.DIFFICULTY_CONFIG[difficulty]
+	var gm = get_node_or_null("/root/GameManager")
+	if is_instance_valid(gm) and gm.DIFFICULTY_CONFIG.has(difficulty):
+		config = gm.DIFFICULTY_CONFIG[difficulty]
 	else:
 		match difficulty:
 			"Easy":
@@ -118,15 +123,20 @@ func _physics_process(delta: float) -> void:
 		_process_nitro(delta)
 		current_speed_kmh = move_toward(current_speed_kmh, target_speed_kmh, accel_rate * delta)
 
-	# Movement along negative Z
 	var speed_mps: float = current_speed_kmh / 3.6
-	velocity = Vector3(0.0, 0.0, -speed_mps)
-	move_and_slide()
-
-	# Keep car locked to its assigned lane
-	global_position.x = start_x
-
-	distance_traveled = maxf(0.0, start_z - global_position.z)
+	if track_node != null and track_node.has_method("get_route_transform"):
+		if is_race_started:
+			distance_traveled += speed_mps * delta
+		var route_tf: Transform3D = track_node.get_route_transform(distance_traveled, assigned_lane_offset)
+		global_position = route_tf.origin
+		global_rotation.y = route_tf.basis.get_euler().y
+	else:
+		# Movement along negative Z
+		velocity = Vector3(0.0, 0.0, -speed_mps)
+		move_and_slide()
+		# Keep car locked to its assigned lane
+		global_position.x = start_x
+		distance_traveled = maxf(0.0, start_z - global_position.z)
 
 	# Spin wheels
 	if car_visuals:
@@ -200,6 +210,7 @@ func reset_car(pos: Vector3) -> void:
 		position = pos
 	start_z = pos.z
 	start_x = pos.x
+	assigned_lane_offset = pos.x
 	current_speed_kmh = 0.0
 	target_speed_kmh = 0.0
 	distance_traveled = 0.0
@@ -210,6 +221,7 @@ func reset_car(pos: Vector3) -> void:
 	keystroke_timer = 0.0
 	error_pause_timer = 0.0
 	is_nitro_active = false
+	global_rotation = Vector3.ZERO
 	var v := get_car_visuals()
 	if v:
 		v.set_nitro_active(false)
