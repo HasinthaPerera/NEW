@@ -29,6 +29,9 @@ var finish_time: float = 0.0
 @export var camera_follow_speed: float = 14.0
 var camera_offset: Vector3 = Vector3(0.0, 1.2, 0.0)
 
+var track_node: Node3D = null
+var assigned_lane_offset: float = -1.5
+
 @onready var car_visuals: SportsCarVisuals = $SportsCarVisuals
 @onready var visuals: SportsCarVisuals = $SportsCarVisuals
 @onready var wheels: Node3D = $SportsCarVisuals/Wheels
@@ -42,6 +45,8 @@ func get_car_visuals() -> SportsCarVisuals:
 
 func _ready() -> void:
 	start_z = global_position.z
+	assigned_lane_offset = global_position.x
+	track_node = get_node_or_null(^"../Track")
 	var v := get_car_visuals()
 	if v:
 		v.set_paint_color(car_color)
@@ -72,13 +77,19 @@ func _physics_process(delta: float) -> void:
 		var accel_rate: float = 60.0 if target_speed_kmh > current_speed_kmh else 40.0
 		current_speed_kmh = move_toward(current_speed_kmh, target_speed_kmh, accel_rate * delta)
 
-	# Godot 3D: forward along -Z
 	var speed_mps: float = current_speed_kmh / 3.6
-	velocity = Vector3(0.0, 0.0, -speed_mps)
-	move_and_slide()
-
-	# Compute total forward distance traveled
-	distance_traveled = maxf(0.0, start_z - global_position.z)
+	if track_node != null and track_node.has_method("get_route_transform"):
+		if is_race_started:
+			distance_traveled += speed_mps * delta
+		var route_tf: Transform3D = track_node.get_route_transform(distance_traveled, assigned_lane_offset)
+		global_position = route_tf.origin
+		global_rotation.y = route_tf.basis.get_euler().y
+	else:
+		# Godot 3D: forward along -Z
+		velocity = Vector3(0.0, 0.0, -speed_mps)
+		move_and_slide()
+		# Compute total forward distance traveled
+		distance_traveled = maxf(0.0, start_z - global_position.z)
 
 	# Spin alloy wheels proportionally to ground speed
 	if car_visuals:
@@ -90,6 +101,8 @@ func _physics_process(delta: float) -> void:
 		var target_pos: Vector3 = global_position + camera_offset
 		var t: float = 1.0 - exp(-camera_follow_speed * delta)
 		camera_pivot.global_position = camera_pivot.global_position.lerp(target_pos, t)
+		var target_rot_y := global_rotation.y
+		camera_pivot.rotation.y = lerp_angle(camera_pivot.rotation.y, target_rot_y, 6.0 * delta)
 
 	# Dynamic camera FOV for speed sensation
 	if camera_3d:
@@ -155,6 +168,7 @@ func reset_car(pos: Vector3 = Vector3.ZERO) -> void:
 		else:
 			position = pos
 		start_z = pos.z
+		assigned_lane_offset = pos.x
 	else:
 		if is_inside_tree():
 			global_position.z = start_z
@@ -168,6 +182,7 @@ func reset_car(pos: Vector3 = Vector3.ZERO) -> void:
 	is_race_finished = false
 	finish_rank = 0
 	finish_time = 0.0
+	global_rotation = Vector3.ZERO
 	end_nitro()
 	var v := get_car_visuals()
 	if v:
@@ -175,5 +190,6 @@ func reset_car(pos: Vector3 = Vector3.ZERO) -> void:
 		v.set_nitro_active(false)
 	if camera_pivot:
 		camera_pivot.global_position = global_position + camera_offset
+		camera_pivot.rotation = Vector3.ZERO
 	if camera_3d:
 		camera_3d.fov = 74.0
