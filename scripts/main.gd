@@ -27,10 +27,16 @@ func _ready() -> void:
 	all_cars = [car, ai_car_1, ai_car_2, ai_car_3]
 
 	# Store starting grid coordinates
-	starting_grid_positions[car] = Vector3(-1.5, 0.0, 0.0)
-	starting_grid_positions[ai_car_1] = Vector3(-4.5, 0.0, 0.0)
-	starting_grid_positions[ai_car_2] = Vector3(1.5, 0.0, 0.0)
-	starting_grid_positions[ai_car_3] = Vector3(4.5, 0.0, 0.0)
+	if track != null and track.has_method("get_car_start_position"):
+		starting_grid_positions[car] = track.get_car_start_position(-1.5)
+		starting_grid_positions[ai_car_1] = track.get_car_start_position(-4.5)
+		starting_grid_positions[ai_car_2] = track.get_car_start_position(1.5)
+		starting_grid_positions[ai_car_3] = track.get_car_start_position(4.5)
+	else:
+		starting_grid_positions[car] = Vector3(-1.5, 0.0, 0.0)
+		starting_grid_positions[ai_car_1] = Vector3(-4.5, 0.0, 0.0)
+		starting_grid_positions[ai_car_2] = Vector3(1.5, 0.0, 0.0)
+		starting_grid_positions[ai_car_3] = Vector3(4.5, 0.0, 0.0)
 
 	# Position cars on starting grid
 	for c in all_cars:
@@ -38,13 +44,26 @@ func _ready() -> void:
 			c.global_position = starting_grid_positions[c]
 
 	# Apply customizations from GameManager if available
-	if is_instance_valid(GameManager):
-		car.car_color = GameManager.player_car_color
+	var gm = get_node_or_null("/root/GameManager")
+	if is_instance_valid(gm):
+		car.car_color = gm.player_car_color
 		var p_vis = car.get_car_visuals()
 		if p_vis:
-			p_vis.set_paint_color(GameManager.player_car_color)
+			p_vis.set_paint_color(gm.player_car_color)
 
-		current_difficulty = GameManager.ai_difficulty
+		# Apply distinct AI car colors from GameManager
+		var ai_cols: Array[Dictionary] = gm.get_ai_colors()
+		var ai_cars_list: Array[CharacterBody3D] = [ai_car_1, ai_car_2, ai_car_3]
+		for i in range(mini(ai_cars_list.size(), ai_cols.size())):
+			var ai_node: CharacterBody3D = ai_cars_list[i]
+			var col_info: Dictionary = ai_cols[i]
+			ai_node.car_name = col_info.get("name", ai_node.car_name)
+			ai_node.car_color = col_info.get("color", ai_node.car_color)
+			var a_vis = ai_node.get_car_visuals()
+			if a_vis:
+				a_vis.set_paint_color(ai_node.car_color)
+
+		current_difficulty = gm.ai_difficulty
 		for c in all_cars:
 			if c != car and c.has_method("apply_difficulty"):
 				c.apply_difficulty(current_difficulty)
@@ -199,7 +218,8 @@ func _record_race_stats_authoritative() -> void:
 		return
 	race_recorded = true
 
-	if is_instance_valid(GameManager):
+	var gm = get_node_or_null("/root/GameManager")
+	if is_instance_valid(gm):
 		var result: Dictionary = {
 			"difficulty": current_difficulty,
 			"position": car.finish_rank if car.finish_rank > 0 else _calculate_player_live_rank(),
@@ -209,9 +229,10 @@ func _record_race_stats_authoritative() -> void:
 			"correct_keystrokes": typing_manager.correct_keystrokes,
 			"incorrect_keystrokes": typing_manager.error_keystrokes,
 			"completed_phrases": typing_manager.completed_phrases,
-			"car_color": GameManager.selected_color_name
+			"car_color": gm.selected_color_name,
+			"track": gm.selected_track_id
 		}
-		GameManager.record_race_result(result)
+		gm.record_race_result(result)
 
 func _show_race_results() -> void:
 	var standings: Array[Dictionary] = []
@@ -256,13 +277,15 @@ func _show_race_results() -> void:
 		"completed_phrases": typing_manager.completed_phrases
 	}
 
-	var xp_info: Dictionary = GameManager.last_race_xp if is_instance_valid(GameManager) else {}
+	var gm = get_node_or_null("/root/GameManager")
+	var xp_info: Dictionary = gm.last_race_xp if is_instance_valid(gm) else {}
 	hud.show_race_results(standings, player_stats, xp_info)
 
 func _on_difficulty_changed(new_difficulty: String) -> void:
 	current_difficulty = new_difficulty
-	if is_instance_valid(GameManager):
-		GameManager.set_difficulty(new_difficulty)
+	var gm = get_node_or_null("/root/GameManager")
+	if is_instance_valid(gm):
+		gm.set_difficulty(new_difficulty)
 	for c in all_cars:
 		if c != car and c.has_method("apply_difficulty"):
 			c.apply_difficulty(new_difficulty)

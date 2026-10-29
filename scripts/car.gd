@@ -142,8 +142,9 @@ func activate_nitro() -> void:
 	if car_visuals:
 		car_visuals.set_nitro_active(true)
 	target_speed_kmh = clampf(target_speed_kmh + nitro_boost_amount_kmh, 45.0, max_nitro_speed_kmh)
-	if is_instance_valid(GameManager):
-		GameManager.record_nitro_activation()
+	var gm = get_node_or_null("/root/GameManager")
+	if is_instance_valid(gm):
+		gm.record_nitro_activation()
 
 func end_nitro() -> void:
 	is_nitro_active = false

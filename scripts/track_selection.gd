@@ -28,13 +28,17 @@ extends Control
 
 var selected_track_id: String = "metro_sprint"
 
+func _get_gm() -> Node:
+	return get_node_or_null("/root/GameManager")
+
 func _ready() -> void:
-	if is_instance_valid(GameManager):
-		selected_track_id = GameManager.selected_track_id
+	var gm = _get_gm()
+	if is_instance_valid(gm):
+		selected_track_id = gm.selected_track_id
 		# Ensure selected track is valid and playable; fallback to metro_sprint
-		if not GameManager.is_track_playable(selected_track_id):
+		if not gm.is_track_playable(selected_track_id):
 			selected_track_id = "metro_sprint"
-			GameManager.set_track(selected_track_id)
+			gm.set_track(selected_track_id)
 	else:
 		selected_track_id = "metro_sprint"
 
@@ -46,15 +50,16 @@ func _ready() -> void:
 		start_race_button.grab_focus()
 
 func _update_context_badges() -> void:
-	if not is_instance_valid(GameManager):
+	var gm = _get_gm()
+	if not is_instance_valid(gm):
 		return
 
 	if car_badge_label:
-		car_badge_label.text = "CAR: %s" % GameManager.selected_color_name.to_upper()
-		car_badge_label.add_theme_color_override("font_color", GameManager.player_car_color)
+		car_badge_label.text = "CAR: %s" % gm.selected_color_name.to_upper()
+		car_badge_label.add_theme_color_override("font_color", gm.player_car_color)
 
 	if diff_badge_label:
-		var diff: String = GameManager.ai_difficulty.to_upper()
+		var diff: String = gm.ai_difficulty.to_upper()
 		diff_badge_label.text = "DIFFICULTY: %s" % diff
 		match diff:
 			"EASY": diff_badge_label.add_theme_color_override("font_color", Color(0.35, 0.85, 0.45))
@@ -64,25 +69,32 @@ func _update_context_badges() -> void:
 func _connect_signals() -> void:
 	if btn_metro:
 		btn_metro.pressed.connect(func(): _on_track_card_selected("metro_sprint"))
+	if btn_desert:
+		btn_desert.pressed.connect(func(): _on_track_card_selected("desert_dash"))
+	if btn_forest:
+		btn_forest.pressed.connect(func(): _on_track_card_selected("forest_run"))
 	if start_race_button:
 		start_race_button.pressed.connect(_on_start_race_pressed)
 	if back_button:
 		back_button.pressed.connect(_on_back_pressed)
 
 func _on_track_card_selected(track_id: String) -> void:
-	if is_instance_valid(GameManager):
-		if GameManager.is_track_playable(track_id):
+	var gm = _get_gm()
+	if is_instance_valid(gm):
+		if gm.is_track_playable(track_id):
 			selected_track_id = track_id
-			GameManager.set_track(track_id)
+			gm.set_track(track_id)
 			_update_track_cards_ui()
 		else:
 			push_warning("Track '%s' is not playable yet." % track_id)
 	else:
-		if track_id == "metro_sprint":
+		if track_id in ["metro_sprint", "desert_dash"]:
 			selected_track_id = track_id
 			_update_track_cards_ui()
 
 func _update_track_cards_ui() -> void:
+	var gm = _get_gm()
+
 	# Card styling borders for selection highlight
 	var selected_border_color := Color(1.0, 0.48, 0.1, 1.0) # Racing Orange
 	var normal_border_color := Color(0.18, 0.25, 0.38, 0.7)
@@ -114,15 +126,41 @@ func _update_track_cards_ui() -> void:
 				btn_metro.modulate = Color(1.0, 1.0, 1.0, 1.0)
 		card_metro.add_theme_stylebox_override("panel", style)
 
-	# 2. Desert Dash (Coming Soon)
+	# 2. Desert Dash
 	if card_desert:
+		var is_desert_playable: bool = gm.is_track_playable("desert_dash") if is_instance_valid(gm) else true
 		var style_desert: StyleBoxFlat = card_desert.get_theme_stylebox("panel").duplicate()
-		style_desert.border_color = disabled_border_color
+		if is_desert_playable:
+			if selected_track_id == "desert_dash":
+				style_desert.border_color = selected_border_color
+				style_desert.border_width_left = 2
+				style_desert.border_width_top = 2
+				style_desert.border_width_right = 2
+				style_desert.border_width_bottom = 2
+				style_desert.shadow_color = Color(1.0, 0.45, 0.1, 0.35)
+				style_desert.shadow_size = 12
+				if btn_desert:
+					btn_desert.disabled = false
+					btn_desert.text = "✓ SELECTED"
+					btn_desert.modulate = Color(1.2, 1.2, 1.2, 1.0)
+			else:
+				style_desert.border_color = normal_border_color
+				style_desert.border_width_left = 1
+				style_desert.border_width_top = 1
+				style_desert.border_width_right = 1
+				style_desert.border_width_bottom = 1
+				style_desert.shadow_size = 0
+				if btn_desert:
+					btn_desert.disabled = false
+					btn_desert.text = "SELECT TRACK"
+					btn_desert.modulate = Color(1.0, 1.0, 1.0, 1.0)
+		else:
+			style_desert.border_color = disabled_border_color
+			if btn_desert:
+				btn_desert.disabled = true
+				btn_desert.text = "🔒 COMING SOON"
+				btn_desert.modulate = Color(0.65, 0.65, 0.7, 0.7)
 		card_desert.add_theme_stylebox_override("panel", style_desert)
-		if btn_desert:
-			btn_desert.disabled = true
-			btn_desert.text = "🔒 COMING SOON"
-			btn_desert.modulate = Color(0.65, 0.65, 0.7, 0.7)
 
 	# 3. Forest Run (Coming Soon)
 	if card_forest:
@@ -135,14 +173,16 @@ func _update_track_cards_ui() -> void:
 			btn_forest.modulate = Color(0.65, 0.65, 0.7, 0.7)
 
 	# Update Selected Track Details box
-	if is_instance_valid(GameManager):
-		var track_info: Dictionary = GameManager.get_selected_track()
+	if is_instance_valid(gm):
+		var track_info: Dictionary = gm.get_selected_track()
+		var len_disp: String = str(track_info.get("length_display", "500m"))
 		if selected_track_title:
 			selected_track_title.text = "SELECTED: %s" % str(track_info.get("name", "Metro Sprint")).to_upper()
 		if selected_track_meta:
-			selected_track_meta.text = "ENVIRONMENT: %s   •   LENGTH: %s (500m)   •   STATUS: %s" % [
+			selected_track_meta.text = "ENVIRONMENT: %s   •   LENGTH: %s (%s)   •   STATUS: %s" % [
 				str(track_info.get("environment", "City")).to_upper(),
 				str(track_info.get("race_length", "Short")).to_upper(),
+				len_disp,
 				str(track_info.get("status", "Playable")).to_upper()
 			]
 		if selected_track_desc:
@@ -151,10 +191,10 @@ func _update_track_cards_ui() -> void:
 	# Enable / disable Start Race button based on track playability
 	if start_race_button:
 		var can_play := false
-		if is_instance_valid(GameManager):
-			can_play = GameManager.is_track_playable(selected_track_id)
+		if is_instance_valid(gm):
+			can_play = gm.is_track_playable(selected_track_id)
 		else:
-			can_play = (selected_track_id == "metro_sprint")
+			can_play = (selected_track_id in ["metro_sprint", "desert_dash"])
 
 		start_race_button.disabled = not can_play
 		if can_play:
@@ -165,11 +205,12 @@ func _update_track_cards_ui() -> void:
 			start_race_button.modulate = Color(0.6, 0.6, 0.6, 0.7)
 
 func _on_start_race_pressed() -> void:
-	if is_instance_valid(GameManager):
-		if not GameManager.is_track_playable(selected_track_id):
+	var gm = _get_gm()
+	if is_instance_valid(gm):
+		if not gm.is_track_playable(selected_track_id):
 			push_warning("Selected track '%s' is not playable." % selected_track_id)
 			return
-		var scene_path: String = GameManager.get_track_scene_path(selected_track_id)
+		var scene_path: String = gm.get_track_scene_path(selected_track_id)
 		get_tree().change_scene_to_file.call_deferred(scene_path)
 	else:
 		get_tree().change_scene_to_file.call_deferred("res://main.tscn")
