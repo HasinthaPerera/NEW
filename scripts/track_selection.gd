@@ -88,7 +88,7 @@ func _on_track_card_selected(track_id: String) -> void:
 		else:
 			push_warning("Track '%s' is not playable yet." % track_id)
 	else:
-		if track_id in ["metro_sprint", "desert_dash"]:
+		if track_id in ["metro_sprint", "desert_dash", "forest_run"]:
 			selected_track_id = track_id
 			_update_track_cards_ui()
 
@@ -162,15 +162,41 @@ func _update_track_cards_ui() -> void:
 				btn_desert.modulate = Color(0.65, 0.65, 0.7, 0.7)
 		card_desert.add_theme_stylebox_override("panel", style_desert)
 
-	# 3. Forest Run (Coming Soon)
+	# 3. Forest Run
 	if card_forest:
+		var is_forest_playable: bool = gm.is_track_playable("forest_run") if is_instance_valid(gm) else true
 		var style_forest: StyleBoxFlat = card_forest.get_theme_stylebox("panel").duplicate()
-		style_forest.border_color = disabled_border_color
+		if is_forest_playable:
+			if selected_track_id == "forest_run":
+				style_forest.border_color = selected_border_color
+				style_forest.border_width_left = 2
+				style_forest.border_width_top = 2
+				style_forest.border_width_right = 2
+				style_forest.border_width_bottom = 2
+				style_forest.shadow_color = Color(1.0, 0.45, 0.1, 0.35)
+				style_forest.shadow_size = 12
+				if btn_forest:
+					btn_forest.disabled = false
+					btn_forest.text = "✓ SELECTED"
+					btn_forest.modulate = Color(1.2, 1.2, 1.2, 1.0)
+			else:
+				style_forest.border_color = normal_border_color
+				style_forest.border_width_left = 1
+				style_forest.border_width_top = 1
+				style_forest.border_width_right = 1
+				style_forest.border_width_bottom = 1
+				style_forest.shadow_size = 0
+				if btn_forest:
+					btn_forest.disabled = false
+					btn_forest.text = "SELECT TRACK"
+					btn_forest.modulate = Color(1.0, 1.0, 1.0, 1.0)
+		else:
+			style_forest.border_color = disabled_border_color
+			if btn_forest:
+				btn_forest.disabled = true
+				btn_forest.text = "🔒 COMING SOON"
+				btn_forest.modulate = Color(0.65, 0.65, 0.7, 0.7)
 		card_forest.add_theme_stylebox_override("panel", style_forest)
-		if btn_forest:
-			btn_forest.disabled = true
-			btn_forest.text = "🔒 COMING SOON"
-			btn_forest.modulate = Color(0.65, 0.65, 0.7, 0.7)
 
 	# Update Selected Track Details box
 	if is_instance_valid(gm):
@@ -194,7 +220,7 @@ func _update_track_cards_ui() -> void:
 		if is_instance_valid(gm):
 			can_play = gm.is_track_playable(selected_track_id)
 		else:
-			can_play = (selected_track_id in ["metro_sprint", "desert_dash"])
+			can_play = (selected_track_id in ["metro_sprint", "desert_dash", "forest_run"])
 
 		start_race_button.disabled = not can_play
 		if can_play:

@@ -174,9 +174,9 @@ const TRACKS_CATALOG: Dictionary = {
 		"length_meters": 1000.0,
 		"length_display": "1000m",
 		"description": "Race through a scenic forest environment.",
-		"status": "Coming Soon",
-		"is_playable": false,
-		"scene_path": ""
+		"status": "Playable",
+		"is_playable": true,
+		"scene_path": "res://scenes/forest_run.tscn"
 	}
 }
 
