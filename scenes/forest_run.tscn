@@ -1,0 +1,70 @@
+[gd_scene load_steps=9 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/forest_track.gd" id="2_forest_track"]
+[ext_resource type="PackedScene" path="res://scenes/car.tscn" id="3_car"]
+[ext_resource type="PackedScene" path="res://scenes/ai_car.tscn" id="4_ai_car"]
+[ext_resource type="Script" path="res://scripts/typing_manager.gd" id="5_type"]
+[ext_resource type="PackedScene" path="res://scenes/hud.tscn" id="6_hud"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_forest"]
+sky_top_color = Color(0.15, 0.45, 0.82, 1)
+sky_horizon_color = Color(0.70, 0.84, 0.80, 1)
+ground_bottom_color = Color(0.12, 0.25, 0.15, 1)
+ground_horizon_color = Color(0.28, 0.48, 0.32, 1)
+sun_angle_max = 32.0
+
+[sub_resource type="Sky" id="Sky_forest_env"]
+sky_material = SubResource("ProceduralSkyMaterial_forest")
+
+[sub_resource type="Environment" id="Environment_forest"]
+background_mode = 2
+sky = SubResource("Sky_forest_env")
+ambient_light_source = 3
+ambient_light_color = Color(0.72, 0.84, 0.76, 1)
+ambient_light_sky_contribution = 0.72
+tonemap_mode = 2
+tonemap_exposure = 1.08
+fog_enabled = true
+fog_light_color = Color(0.68, 0.78, 0.74, 1)
+fog_density = 0.0012
+fog_sky_affect = 0.38
+
+[node name="ForestRun" type="Node3D"]
+script = ExtResource("1_main")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_forest")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.321394, 0.383022, 0, 0.766044, 0.642788, -0.5, -0.55667, 0.663414, 0, 24, 0)
+light_color = Color(1, 0.98, 0.88, 1)
+light_energy = 1.35
+shadow_enabled = true
+directional_shadow_max_distance = 320.0
+
+[node name="Track" type="Node3D" parent="."]
+script = ExtResource("2_forest_track")
+
+[node name="Car" parent="." instance=ExtResource("3_car")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0)
+
+[node name="AICar1" parent="." instance=ExtResource("4_ai_car")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.5, 0, 0)
+car_name = "Blue Thunder"
+car_color = Color(0.12, 0.48, 0.96, 1)
+
+[node name="AICar2" parent="." instance=ExtResource("4_ai_car")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0)
+car_name = "Red Fury"
+car_color = Color(0.92, 0.16, 0.16, 1)
+
+[node name="AICar3" parent="." instance=ExtResource("4_ai_car")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 0)
+car_name = "Green Viper"
+car_color = Color(0.16, 0.82, 0.35, 1)
+
+[node name="TypingManager" type="Node" parent="."]
+script = ExtResource("5_type")
+
+[node name="HUD" parent="." instance=ExtResource("6_hud")]
