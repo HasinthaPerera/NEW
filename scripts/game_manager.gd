@@ -190,7 +190,11 @@ var selected_color_name: String = "Orange"
 var player_car_color: Color = Color("#FF791B")
 var ai_difficulty: String = "Medium"
 var selected_track_id: String = "metro_sprint"
-var music_volume: float = 0.8
+var master_volume: float = 0.8
+var music_volume: float = 0.7
+var sfx_volume: float = 0.85
+var music_muted: bool = false
+var sfx_muted: bool = false
 var sound_enabled: bool = true
 
 # Career Statistics
@@ -254,13 +258,56 @@ func set_difficulty(diff: String) -> void:
 		ai_difficulty = diff
 		save_settings()
 
-func set_volume(vol: float) -> void:
-	music_volume = clampf(vol, 0.0, 1.0)
+func update_audio_settings(m_vol: float, mus_vol: float, s_vol: float, mus_mute: bool, s_mute: bool) -> void:
+	master_volume = clampf(m_vol, 0.0, 1.0)
+	music_volume = clampf(mus_vol, 0.0, 1.0)
+	sfx_volume = clampf(s_vol, 0.0, 1.0)
+	music_muted = mus_mute
+	sfx_muted = s_mute
+	sound_enabled = not sfx_muted
 	save_settings()
 
-func set_sound_enabled(enabled: bool) -> void:
-	sound_enabled = enabled
+func set_master_volume(vol: float) -> void:
+	master_volume = clampf(vol, 0.0, 1.0)
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.set_master_volume(master_volume)
 	save_settings()
+
+func set_music_volume(vol: float) -> void:
+	music_volume = clampf(vol, 0.0, 1.0)
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.set_music_volume(music_volume)
+	save_settings()
+
+func set_sfx_volume(vol: float) -> void:
+	sfx_volume = clampf(vol, 0.0, 1.0)
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.set_sfx_volume(sfx_volume)
+	save_settings()
+
+func set_music_muted(muted: bool) -> void:
+	music_muted = muted
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.set_music_muted(music_muted)
+	save_settings()
+
+func set_sfx_muted(muted: bool) -> void:
+	sfx_muted = muted
+	sound_enabled = not sfx_muted
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.set_sfx_muted(sfx_muted)
+	save_settings()
+
+func set_volume(vol: float) -> void:
+	set_music_volume(vol)
+
+func set_sound_enabled(enabled: bool) -> void:
+	set_sfx_muted(not enabled)
 
 func set_return_screen(path: String) -> void:
 	return_screen_path = path
@@ -322,7 +369,11 @@ func save_settings() -> void:
 		"selected_color_name": selected_color_name,
 		"ai_difficulty": ai_difficulty,
 		"selected_track_id": selected_track_id,
+		"master_volume": master_volume,
 		"music_volume": music_volume,
+		"sfx_volume": sfx_volume,
+		"music_muted": music_muted,
+		"sfx_muted": sfx_muted,
 		"sound_enabled": sound_enabled
 	}
 
@@ -374,11 +425,24 @@ func load_settings() -> void:
 	else:
 		selected_track_id = "metro_sprint"
 
+	if d.has("master_volume") and (d["master_volume"] is float or d["master_volume"] is int):
+		master_volume = clampf(float(d["master_volume"]), 0.0, 1.0)
+
 	if d.has("music_volume") and (d["music_volume"] is float or d["music_volume"] is int):
 		music_volume = clampf(float(d["music_volume"]), 0.0, 1.0)
 
-	if d.has("sound_enabled") and d["sound_enabled"] is bool:
+	if d.has("sfx_volume") and (d["sfx_volume"] is float or d["sfx_volume"] is int):
+		sfx_volume = clampf(float(d["sfx_volume"]), 0.0, 1.0)
+
+	if d.has("music_muted") and d["music_muted"] is bool:
+		music_muted = bool(d["music_muted"])
+
+	if d.has("sfx_muted") and d["sfx_muted"] is bool:
+		sfx_muted = bool(d["sfx_muted"])
+		sound_enabled = not sfx_muted
+	elif d.has("sound_enabled") and d["sound_enabled"] is bool:
 		sound_enabled = bool(d["sound_enabled"])
+		sfx_muted = not sound_enabled
 
 func calculate_race_xp(pos: int, acc: float, diff: String) -> Dictionary:
 	var completion_xp := XP_COMPLETION
@@ -862,6 +926,13 @@ func _show_toast_item(item: Dictionary) -> void:
 	toast_panel.visible = true
 	toast_panel.position.y = -100.0
 	toast_panel.modulate.a = 0.0
+
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		if item.get("type", "") == "level_up":
+			am.play_level_up()
+		else:
+			am.play_achievement_unlock()
 
 # --- Persistence ---
 

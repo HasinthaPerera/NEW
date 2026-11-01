@@ -19,6 +19,11 @@ extends Control
 @onready var achievements_button: Button = %AchievementsButton
 
 func _ready() -> void:
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_menu_music()
+		am.attach_ui_sounds(self)
+
 	back_button.pressed.connect(_on_back_pressed)
 	if achievements_button:
 		achievements_button.pressed.connect(_on_achievements_pressed)

@@ -88,7 +88,15 @@ func _ready() -> void:
 	# Connect Track signals
 	track.car_crossed_finish_line.connect(_on_car_crossed_finish_line)
 
-	# Initialize race setup
+	# Initialize race setup and audio
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_race_music()
+		var ai_cars_list: Array[CharacterBody3D] = [ai_car_1, ai_car_2, ai_car_3]
+		am.start_engine_sounds(car, ai_cars_list)
+		if hud:
+			am.attach_ui_sounds(hud)
+
 	_start_countdown_sequence()
 
 func _start_countdown_sequence() -> void:
@@ -99,6 +107,10 @@ func _start_countdown_sequence() -> void:
 	race_recorded = false
 	top_speed_achieved = 0.0
 	finished_cars.clear()
+
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.stop_nitro_loop()
 
 	# Reset cars to grid slots
 	for c in all_cars:
@@ -125,22 +137,32 @@ func _process(delta: float) -> void:
 func _process_countdown(delta: float) -> void:
 	countdown_timer -= delta
 
+	var am = get_node_or_null("/root/AudioManager")
+
 	if countdown_timer > 2.0:
 		if last_countdown_sec != 3:
 			last_countdown_sec = 3
 			hud.set_countdown("3", false)
+			if is_instance_valid(am):
+				am.play_countdown_beep()
 	elif countdown_timer > 1.0:
 		if last_countdown_sec != 2:
 			last_countdown_sec = 2
 			hud.set_countdown("2", false)
+			if is_instance_valid(am):
+				am.play_countdown_beep()
 	elif countdown_timer > 0.0:
 		if last_countdown_sec != 1:
 			last_countdown_sec = 1
 			hud.set_countdown("1", false)
+			if is_instance_valid(am):
+				am.play_countdown_beep()
 	elif countdown_timer > -0.65:
 		if last_countdown_sec != 0:
 			last_countdown_sec = 0
 			hud.set_countdown("GO!", true)
+			if is_instance_valid(am):
+				am.play_race_start()
 			_launch_race()
 	else:
 		is_countdown_active = false
@@ -157,6 +179,14 @@ func _process_live_race() -> void:
 	# Track distance & speed for player
 	hud.update_distance(car.distance_traveled, track.track_length)
 	top_speed_achieved = maxf(top_speed_achieved, car.current_speed_kmh)
+
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		var ai_speeds: Dictionary = {}
+		for c in all_cars:
+			if c != car and "current_speed_kmh" in c:
+				ai_speeds[c] = c.current_speed_kmh
+		am.update_engine_sounds(car.current_speed_kmh, ai_speeds)
 
 	# Check finish condition for all cars based on track distance
 	for c in all_cars:
@@ -210,6 +240,11 @@ func _on_car_finished(car_node: CharacterBody3D) -> void:
 	if car_node == car and not is_game_over:
 		is_game_over = true
 		typing_manager.stop_racing()
+		var am = get_node_or_null("/root/AudioManager")
+		if is_instance_valid(am):
+			am.play_finish_line()
+			am.stop_engine_sounds()
+			am.stop_nitro_loop()
 		_record_race_stats_authoritative()
 		_show_race_results()
 
@@ -281,6 +316,14 @@ func _show_race_results() -> void:
 	var xp_info: Dictionary = gm.last_race_xp if is_instance_valid(gm) else {}
 	hud.show_race_results(standings, player_stats, xp_info)
 
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		var p_rank: int = car.finish_rank if car.finish_rank > 0 else _calculate_player_live_rank()
+		if p_rank == 1:
+			am.play_victory()
+		else:
+			am.play_defeat()
+
 func _on_difficulty_changed(new_difficulty: String) -> void:
 	current_difficulty = new_difficulty
 	var gm = get_node_or_null("/root/GameManager")
@@ -300,15 +343,24 @@ func _on_hud_input_changed(new_text: String) -> void:
 func _on_correct_character(_char_typed: String) -> void:
 	if not is_countdown_active:
 		car.accelerate_from_keystroke()
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_type_click()
 
 func _on_incorrect_character() -> void:
 	if not is_countdown_active:
 		car.apply_typing_mistake_penalty()
 		hud.show_typing_error_effect()
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_type_error()
 
 func _on_sentence_completed(_sentence: String) -> void:
 	if not is_countdown_active:
 		car.activate_nitro()
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_phrase_complete()
 
 func _on_sentence_updated(target: String, typed: String, is_error: bool) -> void:
 	hud.update_sentence_display(target, typed, is_error)
@@ -318,9 +370,30 @@ func _on_car_speed_changed(current_kmh: float, max_kmh: float) -> void:
 
 func _on_car_nitro_status_changed(is_active: bool, time_remaining: float) -> void:
 	hud.set_nitro_active(is_active, time_remaining)
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		if is_active:
+			am.play_nitro_boost()
+			am.start_nitro_loop()
+		else:
+			am.stop_nitro_loop()
 
 func restart_race() -> void:
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.stop_nitro_loop()
+		am.play_race_music()
+		var ai_cars_list: Array[CharacterBody3D] = [ai_car_1, ai_car_2, ai_car_3]
+		am.start_engine_sounds(car, ai_cars_list)
 	_start_countdown_sequence()
 
+func _exit_tree() -> void:
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.stop_all_race_audio()
+
 func _on_hud_menu_requested() -> void:
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.stop_all_race_audio()
 	get_tree().change_scene_to_file.call_deferred("res://scenes/main_menu.tscn")

@@ -43,6 +43,11 @@ extends Control
 @onready var footer_history_button: Button = %FooterHistoryButton
 
 func _ready() -> void:
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_menu_music()
+		am.attach_ui_sounds(self)
+
 	_connect_buttons()
 	if header_back_button:
 		header_back_button.grab_focus()
