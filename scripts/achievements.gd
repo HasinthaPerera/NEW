@@ -7,6 +7,11 @@ extends Control
 @onready var stats_button: Button = %StatsButton
 
 func _ready() -> void:
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_menu_music()
+		am.attach_ui_sounds(self)
+
 	back_button.pressed.connect(_on_back_pressed)
 	if stats_button:
 		stats_button.pressed.connect(_on_stats_pressed)

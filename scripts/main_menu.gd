@@ -13,15 +13,31 @@ extends Node3D
 
 # Settings Modal
 @onready var settings_modal: PanelContainer = $UI/SettingsModal
-@onready var volume_slider: HSlider = $UI/SettingsModal/Margin/VBox/VolumeRow/VolumeSlider
-@onready var volume_value_label: Label = $UI/SettingsModal/Margin/VBox/VolumeRow/VolumeValLabel
+@onready var master_slider: HSlider = $UI/SettingsModal/Margin/VBox/MasterRow/MasterSlider
+@onready var master_val_label: Label = $UI/SettingsModal/Margin/VBox/MasterRow/MasterValLabel
+@onready var music_slider: HSlider = $UI/SettingsModal/Margin/VBox/MusicRow/MusicSlider
+@onready var music_val_label: Label = $UI/SettingsModal/Margin/VBox/MusicRow/MusicValLabel
+@onready var sfx_slider: HSlider = $UI/SettingsModal/Margin/VBox/SFXRow/SFXSlider
+@onready var sfx_val_label: Label = $UI/SettingsModal/Margin/VBox/SFXRow/SFXValLabel
+@onready var music_mute_toggle: CheckButton = $UI/SettingsModal/Margin/VBox/MuteRow/MusicMuteToggle
+@onready var sfx_mute_toggle: CheckButton = $UI/SettingsModal/Margin/VBox/MuteRow/SFXMuteToggle
 @onready var diff_option: OptionButton = $UI/SettingsModal/Margin/VBox/DiffRow/DiffOption
-@onready var sound_toggle: CheckButton = $UI/SettingsModal/Margin/VBox/SoundRow/SoundToggle
 @onready var close_settings_button: Button = $UI/SettingsModal/Margin/VBox/CloseSettingsButton
+
+# Backward compatibility references
+@onready var volume_slider: HSlider = master_slider
+@onready var volume_value_label: Label = master_val_label
+@onready var sound_toggle: CheckButton = sfx_mute_toggle
 
 var auto_rotate_speed: float = 0.4
 
 func _ready() -> void:
+	# Start menu background music
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_menu_music()
+		am.attach_ui_sounds($UI)
+
 	# Configure car appearance to match saved player choice
 	_update_car_display()
 	_update_status_badge()
@@ -93,14 +109,27 @@ func _on_settings_pressed() -> void:
 func _setup_settings_modal() -> void:
 	settings_modal.visible = false
 
-	# Volume
-	volume_slider.value = GameManager.music_volume * 100.0
-	volume_value_label.text = "%d%%" % int(volume_slider.value)
-	volume_slider.value_changed.connect(_on_volume_changed)
+	# Master Volume
+	master_slider.value = GameManager.master_volume * 100.0
+	master_val_label.text = "%d%%" % int(master_slider.value)
+	master_slider.value_changed.connect(_on_master_volume_changed)
 
-	# Sound toggle
-	sound_toggle.button_pressed = GameManager.sound_enabled
-	sound_toggle.toggled.connect(_on_sound_toggled)
+	# Music Volume
+	music_slider.value = GameManager.music_volume * 100.0
+	music_val_label.text = "%d%%" % int(music_slider.value)
+	music_slider.value_changed.connect(_on_music_volume_changed)
+
+	# SFX Volume
+	sfx_slider.value = GameManager.sfx_volume * 100.0
+	sfx_val_label.text = "%d%%" % int(sfx_slider.value)
+	sfx_slider.value_changed.connect(_on_sfx_volume_changed)
+
+	# Mutes
+	music_mute_toggle.button_pressed = GameManager.music_muted
+	music_mute_toggle.toggled.connect(_on_music_mute_toggled)
+
+	sfx_mute_toggle.button_pressed = GameManager.sfx_muted
+	sfx_mute_toggle.toggled.connect(_on_sfx_mute_toggled)
 
 	# Difficulty
 	diff_option.clear()
@@ -117,18 +146,38 @@ func _setup_settings_modal() -> void:
 	# Close button
 	close_settings_button.pressed.connect(_on_close_settings_pressed)
 
+func _on_master_volume_changed(val: float) -> void:
+	master_val_label.text = "%d%%" % int(val)
+	GameManager.set_master_volume(val / 100.0)
+
+func _on_music_volume_changed(val: float) -> void:
+	music_val_label.text = "%d%%" % int(val)
+	GameManager.set_music_volume(val / 100.0)
+
+func _on_sfx_volume_changed(val: float) -> void:
+	sfx_val_label.text = "%d%%" % int(val)
+	GameManager.set_sfx_volume(val / 100.0)
+
+func _on_music_mute_toggled(toggled_on: bool) -> void:
+	GameManager.set_music_muted(toggled_on)
+
+func _on_sfx_mute_toggled(toggled_on: bool) -> void:
+	GameManager.set_sfx_muted(toggled_on)
+
 func _on_volume_changed(val: float) -> void:
-	volume_value_label.text = "%d%%" % int(val)
-	GameManager.set_volume(val / 100.0)
+	_on_master_volume_changed(val)
 
 func _on_sound_toggled(toggled_on: bool) -> void:
-	GameManager.set_sound_enabled(toggled_on)
+	_on_sfx_mute_toggled(not toggled_on)
 
 func _on_difficulty_selected(idx: int) -> void:
 	match idx:
 		0: GameManager.set_difficulty("Easy")
 		1: GameManager.set_difficulty("Medium")
 		2: GameManager.set_difficulty("Hard")
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_ui_click()
 	_update_status_badge()
 
 func _on_close_settings_pressed() -> void:

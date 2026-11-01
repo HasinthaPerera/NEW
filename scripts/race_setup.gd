@@ -21,6 +21,11 @@ var selected_difficulty: String = "Medium"
 var auto_rotate_speed: float = 0.35
 
 func _ready() -> void:
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_menu_music()
+		am.attach_ui_sounds($UI)
+
 	# Setup car visuals based on player choice
 	if car_visuals:
 		car_visuals.set_paint_color(GameManager.player_car_color)

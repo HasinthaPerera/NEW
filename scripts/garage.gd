@@ -25,6 +25,11 @@ var color_buttons: Dictionary = {}
 var neon_material: StandardMaterial3D
 
 func _ready() -> void:
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_menu_music()
+		am.attach_ui_sounds($UI)
+
 	color_buttons = {
 		"Orange": color_btn_orange,
 		"Blue": color_btn_blue,
@@ -129,6 +134,9 @@ func _update_button_highlights() -> void:
 func _on_select_pressed() -> void:
 	if is_instance_valid(GameManager):
 		GameManager.set_car_color_by_name(preview_color_name)
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_track_select()
 	if save_toast:
 		save_toast.text = "✓ %s CAR SELECTED & SAVED!" % preview_color_name.to_upper()
 		save_toast.visible = true

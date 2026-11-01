@@ -345,10 +345,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -230.0
-offset_top = -180.0
-offset_right = 230.0
-offset_bottom = 180.0
+offset_left = -250.0
+offset_top = -245.0
+offset_right = 250.0
+offset_bottom = 245.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("Style_Modal")
@@ -356,18 +356,18 @@ theme_override_styles/panel = SubResource("Style_Modal")
 [node name="Margin" type="MarginContainer" parent="UI/SettingsModal"]
 layout_mode = 2
 theme_override_constants/margin_left = 28
-theme_override_constants/margin_top = 28
+theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 28
-theme_override_constants/margin_bottom = 28
+theme_override_constants/margin_bottom = 24
 
 [node name="VBox" type="VBoxContainer" parent="UI/SettingsModal/Margin"]
 layout_mode = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 12
 
 [node name="ModalTitle" type="Label" parent="UI/SettingsModal/Margin/VBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2, 0.75, 1, 1)
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 20
 text = "⚙  GAME SETTINGS"
 horizontal_alignment = 1
 
@@ -376,49 +376,118 @@ custom_minimum_size = Vector2(0, 1)
 layout_mode = 2
 color = Color(0.2, 0.45, 0.7, 0.8)
 
-[node name="VolumeRow" type="HBoxContainer" parent="UI/SettingsModal/Margin/VBox"]
+[node name="AudioHeader" type="Label" parent="UI/SettingsModal/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.2, 1)
+theme_override_font_sizes/font_size = 12
+text = "AUDIO & SOUND"
+
+[node name="MasterRow" type="HBoxContainer" parent="UI/SettingsModal/Margin/VBox"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="VolumeLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/VolumeRow"]
-custom_minimum_size = Vector2(100, 0)
+[node name="MasterLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/MasterRow"]
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 text = "Master Volume"
 
-[node name="VolumeSlider" type="HSlider" parent="UI/SettingsModal/Margin/VBox/VolumeRow"]
+[node name="MasterSlider" type="HSlider" parent="UI/SettingsModal/Margin/VBox/MasterRow"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
 value = 80.0
 
-[node name="VolumeValLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/VolumeRow"]
+[node name="MasterValLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/MasterRow"]
 custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 text = "80%"
 horizontal_alignment = 2
 
-[node name="SoundRow" type="HBoxContainer" parent="UI/SettingsModal/Margin/VBox"]
+[node name="MusicRow" type="HBoxContainer" parent="UI/SettingsModal/Margin/VBox"]
 layout_mode = 2
+theme_override_constants/separation = 12
 
-[node name="SoundLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/SoundRow"]
+[node name="MusicLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/MusicRow"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Music Volume"
+
+[node name="MusicSlider" type="HSlider" parent="UI/SettingsModal/Margin/VBox/MusicRow"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_font_sizes/font_size = 14
-text = "Sound Effects"
+size_flags_vertical = 4
+value = 70.0
 
-[node name="SoundToggle" type="CheckButton" parent="UI/SettingsModal/Margin/VBox/SoundRow"]
+[node name="MusicValLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/MusicRow"]
+custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
-button_pressed = true
+theme_override_font_sizes/font_size = 13
+text = "70%"
+horizontal_alignment = 2
+
+[node name="SFXRow" type="HBoxContainer" parent="UI/SettingsModal/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="SFXLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/SFXRow"]
+custom_minimum_size = Vector2(110, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "SFX Volume"
+
+[node name="SFXSlider" type="HSlider" parent="UI/SettingsModal/Margin/VBox/SFXRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 85.0
+
+[node name="SFXValLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/SFXRow"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "85%"
+horizontal_alignment = 2
+
+[node name="MuteRow" type="HBoxContainer" parent="UI/SettingsModal/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="MusicMuteLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/MuteRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Mute Music"
+
+[node name="MusicMuteToggle" type="CheckButton" parent="UI/SettingsModal/Margin/VBox/MuteRow"]
+layout_mode = 2
+
+[node name="MuteSpacer" type="Control" parent="UI/SettingsModal/Margin/VBox/MuteRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SFXMuteLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/MuteRow"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 13
+text = "Mute SFX"
+
+[node name="SFXMuteToggle" type="CheckButton" parent="UI/SettingsModal/Margin/VBox/MuteRow"]
+layout_mode = 2
+
+[node name="GameplayHeader" type="Label" parent="UI/SettingsModal/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.75, 0.2, 1)
+theme_override_font_sizes/font_size = 12
+text = "RACE DIFFICULTY"
 
 [node name="DiffRow" type="HBoxContainer" parent="UI/SettingsModal/Margin/VBox"]
 layout_mode = 2
 
 [node name="DiffLabel" type="Label" parent="UI/SettingsModal/Margin/VBox/DiffRow"]
-custom_minimum_size = Vector2(100, 0)
+custom_minimum_size = Vector2(110, 0)
 layout_mode = 2
-theme_override_font_sizes/font_size = 14
+theme_override_font_sizes/font_size = 13
 text = "AI Difficulty"
 
 [node name="DiffOption" type="OptionButton" parent="UI/SettingsModal/Margin/VBox/DiffRow"]
@@ -426,13 +495,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="Spacer" type="Control" parent="UI/SettingsModal/Margin/VBox"]
-custom_minimum_size = Vector2(0, 10)
+custom_minimum_size = Vector2(0, 4)
 layout_mode = 2
 
 [node name="CloseSettingsButton" type="Button" parent="UI/SettingsModal/Margin/VBox"]
-custom_minimum_size = Vector2(0, 42)
+custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
-theme_override_font_sizes/font_size = 15
+theme_override_font_sizes/font_size = 14
 theme_override_styles/normal = SubResource("Style_SecondaryBtn")
 theme_override_styles/hover = SubResource("Style_SecondaryBtnHover")
 text = "BACK / CLOSE"

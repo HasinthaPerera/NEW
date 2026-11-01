@@ -32,6 +32,11 @@ func _get_gm() -> Node:
 	return get_node_or_null("/root/GameManager")
 
 func _ready() -> void:
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_menu_music()
+		am.attach_ui_sounds(self)
+
 	var gm = _get_gm()
 	if is_instance_valid(gm):
 		selected_track_id = gm.selected_track_id
@@ -79,6 +84,10 @@ func _connect_signals() -> void:
 		back_button.pressed.connect(_on_back_pressed)
 
 func _on_track_card_selected(track_id: String) -> void:
+	var am = get_node_or_null("/root/AudioManager")
+	if is_instance_valid(am):
+		am.play_track_select()
+
 	var gm = _get_gm()
 	if is_instance_valid(gm):
 		if gm.is_track_playable(track_id):

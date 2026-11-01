@@ -277,8 +277,9 @@ func show_race_results(standings: Array, player_stats: Dictionary, xp_info: Dict
 	]
 
 	# XP Rewards Breakdown & Leveling
-	if xp_info.is_empty() and is_instance_valid(GameManager):
-		xp_info = GameManager.last_race_xp
+	var gm = get_node_or_null("/root/GameManager")
+	if xp_info.is_empty() and is_instance_valid(gm):
+		xp_info = gm.last_race_xp
 
 	if xp_rewards_box:
 		if xp_info.is_empty():
@@ -317,6 +318,9 @@ func show_race_results(standings: Array, player_stats: Dictionary, xp_info: Dict
 			if level_up_banner and level_up_label:
 				if leveled_up:
 					level_up_banner.visible = true
+					var am = get_node_or_null("/root/AudioManager")
+					if is_instance_valid(am):
+						am.play_level_up()
 					if levels_gained > 1:
 						level_up_label.text = "🎉 MULTI-LEVEL UP! Level %d ➔ Level %d — %s! 🎉" % [
 							prev_lvl, cur_lvl, title_str
